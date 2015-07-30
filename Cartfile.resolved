@@ -1,0 +1,20 @@
+github "aventurella/fmdb" "26c25de357f6dc90569372f7e180cf993fe51956"
+
+
+
+public struct Test<T>{
+    let type: T.Type
+
+    public static func foo() -> Column<Int>{
+        return Test(Int.self)
+    }
+
+    init(_ type: T.Type){
+        self.type = type
+    }
+}
+
+
+func factory() -> Test<Int>{
+    return Test(Int.self)
+}
