@@ -25,17 +25,11 @@ public struct ForeignKey{
         self.relatedColumn = table.primaryKey!
     }
 
+    public init(_ model: ORMModel){
+        self.relatedColumn = model.table.primaryKey!
+    }
+
     public var relatedTable: Table{
         return relatedColumn.table!
     }
 }
-//public struct ForeignKey : CustomStringConvertible{
-//    public let label: String
-//    public let type: Any.Type
-//    public let relatedType: AmigoModel.Type
-//    public let optional: Bool
-//
-//    public var description: String {
-//        return "<ForeignKey: \(label) toOne:\(relatedType) optional: \(optional)>"
-//    }
-//}

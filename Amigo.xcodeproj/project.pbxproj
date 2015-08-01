@@ -25,6 +25,7 @@
 		23474D051B52FCF8004D05BE /* Amigo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B8F2871B4197A700153865 /* Amigo.swift */; };
 		23474D061B52FE8A004D05BE /* AmigoSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ED24291B41B34400C2AF28 /* AmigoSession.swift */; };
 		23474D071B5303A1004D05BE /* QuerySet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ED242D1B41BD1F00C2AF28 /* QuerySet.swift */; };
+		237BC1071B6C22A200F07892 /* ModelMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237BC1061B6C22A200F07892 /* ModelMappingTests.swift */; };
 		238D38D21B472A4D00EC99E2 /* FMDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238D38D11B472A4100EC99E2 /* FMDB.framework */; };
 		23A5D0751B62E7C000915F24 /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5D0741B62E7C000915F24 /* Relationship.swift */; };
 		23B43AEF1B4AAA0000F90DFD /* MetaTableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B43AE61B49DA3400F90DFD /* MetaTableTests.swift */; };
@@ -146,6 +147,7 @@
 		233118AF1B62761C00943976 /* SQLiteEngine+QuerySet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SQLiteEngine+QuerySet.swift"; sourceTree = "<group>"; };
 		23474CFB1B52F3D2004D05BE /* ORMModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ORMModel.swift; sourceTree = "<group>"; };
 		23474D011B52F7F8004D05BE /* Mapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mapper.swift; sourceTree = "<group>"; };
+		237BC1061B6C22A200F07892 /* ModelMappingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelMappingTests.swift; sourceTree = "<group>"; };
 		238D38C01B472A4100EC99E2 /* fmdb.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = fmdb.xcodeproj; path = ../../../../../github/fmdb/fmdb.xcodeproj; sourceTree = "<group>"; };
 		23A5D0741B62E7C000915F24 /* Relationship.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
 		23B43AE01B47489600F90DFD /* SQLiteEngineTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteEngineTests.swift; sourceTree = "<group>"; };
@@ -311,6 +313,7 @@
 			children = (
 				23ED24471B41CB0700C2AF28 /* Models */,
 				233118A91B619FC300943976 /* AmigoTestBase.swift */,
+				237BC1061B6C22A200F07892 /* ModelMappingTests.swift */,
 				233118AD1B626C8200943976 /* AmigoQuerySetTests.swift */,
 				23B8F27C1B41978C00153865 /* AmigoTests.swift */,
 				233118A71B619F6D00943976 /* AmigoSessionTests.swift */,
@@ -583,6 +586,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				237BC1071B6C22A200F07892 /* ModelMappingTests.swift in Sources */,
 				23474D031B52FC3F004D05BE /* AmigoTests.swift in Sources */,
 				23B43B0D1B4C77E400F90DFD /* SelectTests.swift in Sources */,
 				23B43AF31B4B16B700F90DFD /* MetaColumnTests.swift in Sources */,

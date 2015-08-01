@@ -63,6 +63,13 @@ public class OneToMany: Relationship, CustomStringConvertible{
     let table: String
     let column: String
 
+    public convenience init<T: AmigoModel>(_ label: String, using: T.Type, on: String){
+        let parts = split(String(using).unicodeScalars){ $0 == "." }.map{ String($0).lowercaseString }
+        let tableName = "_".join(parts)
+
+        self.init(label, table: tableName, column: on)
+    }
+
     public init(_ label: String, table: String, column: String){
         self.label = label
         self.table = table

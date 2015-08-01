@@ -123,7 +123,23 @@ public class AmigoSession: AmigoConfigured{
         return action
     }
 
-    public func add<T: AmigoModel>(obj: T){
+    public func add<T: AmigoModel>(objs: T...){
+        add(objs)
+    }
+
+    public func delete<T: AmigoModel>(objs: T...){
+        delete(objs)
+    }
+
+    public func add<T: AmigoModel>(objs: [T]){
+        objs.map(self.addModel)
+    }
+
+    public func delete<T: AmigoModel>(objs: [T]){
+        objs.map(self.deleteModel)
+    }
+
+    public func addModel<T: AmigoModel>(obj: T){
         let model = typeIndex[String(obj.dynamicType)]!
         if obj.valueForKey(model.primaryKey.label) == nil{
             insert(obj, model: model)
@@ -132,7 +148,8 @@ public class AmigoSession: AmigoConfigured{
         }
     }
 
-    public func delete<T: AmigoModel>(obj: T){
+
+    public func deleteModel<T: AmigoModel>(obj: T){
         let model = typeIndex[String(obj.dynamicType)]!
         let id = model.primaryKey.label
         let value = obj.valueForKey(id)!
