@@ -311,6 +311,7 @@ the :code:`User Info` of the relationship has the following key value pair:
 Lets make a manual example.
 
 .. code-block:: swift
+
     import Amigo
 
 
