@@ -40,6 +40,20 @@ instances. Lets take a look at how we do that.
     amigo.createAll()
 
 
+Column Options
+------------------------
+
+Columns can be initialized with the following options (default values presented):
+
+.. code-block:: swift
+
+    type: // See Column Types below
+    primaryKey: Bool = false
+    indexed: Bool = false
+    optional: Bool = true
+    unique: Bool = false
+
+
 Column Types
 ------------------------
 
