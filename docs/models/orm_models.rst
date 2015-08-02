@@ -371,3 +371,55 @@ Now, lets manually map them and create the relationship:
     the 2 columns that are required for the many-to-many relationship.
 
 
+Now that we are mapped, lets try adding an exercise **without** using
+the WorkoutMeta.
+
+.. code-block:: swift
+
+    let session = amigo.session
+
+    let w1 = Workout()
+    w1.label = "foo"
+
+    let e1 = WorkoutExercise()
+    e1.label = "Jumping Jacks"
+
+    session.add(w1)
+    session.add(e1)
+
+    // This will cause a fatal error.
+    session.using(w1).relationship("exercises").add(e1)
+
+Because we have instructed Amigo that this many-to-many relationship
+uses a "through" model, we can no longer use the many-to-many add or delete
+functionality, as the :code:`WorkoutMeta` model is required.
+
+Instead, you simply add a :code:`WorkoutMeta` model like any other model.
+Amigo handles the insert into the intermediate table for you.
+
+.. code-block:: swift
+
+    let session = amigo.session
+
+    let w1 = Workout()
+    w1.label = "foo"
+
+    let e1 = WorkoutExercise()
+    e1.label = "Jumping Jacks"
+
+    let m1 = WorkoutMeta()
+    m1.workout = w1
+    m1.exercise = e1
+    m1.duration = 60000
+    m1.position = 1
+
+    session.add(w1, e1, m1)
+
+    // querying the many-to-many however is the same.
+    var results = session
+        .query(WorkoutMeta)
+        .using(w1)
+        .relationship("exercises")
+        .orderBy("position", ascending: true)
+        .all()
+
