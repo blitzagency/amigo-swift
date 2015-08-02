@@ -32,14 +32,39 @@ public class ManyToMany: Relationship, CustomStringConvertible, Hashable{
     var left: ORMModel!
     var right: ORMModel!
     var through: ORMModel?
-    let tables: [String]
+    var tables: [String]!
     var throughModel: String?
     var associationTable: Table!
+    var partial: ((type: String) -> Void)?
+
+    public init<T: AmigoModel, U: AmigoModel>(_ label: String, using: T.Type, throughModel: U.Type? = nil){
+        self.label = label
+        self.partial = self.partialInit(using, throughModel: throughModel)
+    }
 
     public init(_ label: String, tables:[String], throughModel: String? = nil){
         self.label = label
         self.tables = tables.sort()
-        self.throughModel = throughModel
+
+        if let throughModel = throughModel {
+            self.throughModel = throughModel
+        }
+    }
+
+    func partialInit<T: AmigoModel, U: AmigoModel>
+        (right: T.Type, throughModel: U.Type? = nil)
+        (left: String){
+
+        let r = typeToTableName(right)
+        let l = typeToTableName(left)
+
+        self.tables = [l, r].sort()
+
+        if let throughModel = throughModel{
+            self.throughModel = String(throughModel)
+        }
+
+        self.partial = nil
     }
 
     public lazy var tableName: String = {
@@ -53,7 +78,6 @@ public class ManyToMany: Relationship, CustomStringConvertible, Hashable{
     public var description: String{
         return "<ManyToMany: \(label)>"
     }
-
 }
 
 public class OneToMany: Relationship, CustomStringConvertible{
@@ -64,9 +88,7 @@ public class OneToMany: Relationship, CustomStringConvertible{
     let column: String
 
     public convenience init<T: AmigoModel>(_ label: String, using: T.Type, on: String){
-        let parts = split(String(using).unicodeScalars){ $0 == "." }.map{ String($0).lowercaseString }
-        let tableName = "_".join(parts)
-
+        let tableName = typeToTableName(using)
         self.init(label, table: tableName, column: on)
     }
 

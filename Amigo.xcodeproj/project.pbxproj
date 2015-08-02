@@ -26,6 +26,7 @@
 		23474D061B52FE8A004D05BE /* AmigoSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ED24291B41B34400C2AF28 /* AmigoSession.swift */; };
 		23474D071B5303A1004D05BE /* QuerySet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ED242D1B41BD1F00C2AF28 /* QuerySet.swift */; };
 		237BC1071B6C22A200F07892 /* ModelMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237BC1061B6C22A200F07892 /* ModelMappingTests.swift */; };
+		237BC1131B6EC8C500F07892 /* typeToTableName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237BC1121B6EC8C500F07892 /* typeToTableName.swift */; };
 		238D38D21B472A4D00EC99E2 /* FMDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238D38D11B472A4100EC99E2 /* FMDB.framework */; };
 		23A5D0751B62E7C000915F24 /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5D0741B62E7C000915F24 /* Relationship.swift */; };
 		23B43AEF1B4AAA0000F90DFD /* MetaTableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B43AE61B49DA3400F90DFD /* MetaTableTests.swift */; };
@@ -148,6 +149,7 @@
 		23474CFB1B52F3D2004D05BE /* ORMModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ORMModel.swift; sourceTree = "<group>"; };
 		23474D011B52F7F8004D05BE /* Mapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mapper.swift; sourceTree = "<group>"; };
 		237BC1061B6C22A200F07892 /* ModelMappingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelMappingTests.swift; sourceTree = "<group>"; };
+		237BC1121B6EC8C500F07892 /* typeToTableName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = typeToTableName.swift; sourceTree = "<group>"; };
 		238D38C01B472A4100EC99E2 /* fmdb.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = fmdb.xcodeproj; path = ../../../../../github/fmdb/fmdb.xcodeproj; sourceTree = "<group>"; };
 		23A5D0741B62E7C000915F24 /* Relationship.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
 		23B43AE01B47489600F90DFD /* SQLiteEngineTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteEngineTests.swift; sourceTree = "<group>"; };
@@ -230,6 +232,14 @@
 			name = Extensions;
 			sourceTree = "<group>";
 		};
+		237BC10D1B6EC8B400F07892 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				237BC1121B6EC8C500F07892 /* typeToTableName.swift */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
 		238D38C11B472A4100EC99E2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -291,6 +301,7 @@
 		23B8F26F1B41978C00153865 /* Amigo */ = {
 			isa = PBXGroup;
 			children = (
+				237BC10D1B6EC8B400F07892 /* Utils */,
 				231C84D71B553A4200AD6C06 /* Extensions */,
 				23B43B0E1B4EA0C200F90DFD /* Mappers */,
 				23B43AF91B4B76AF00F90DFD /* Expressions */,
@@ -543,6 +554,7 @@
 				23B43AF71B4B1A8400F90DFD /* SQLiteEngine.swift in Sources */,
 				23B43AFB1B4B770900F90DFD /* Expressions.swift in Sources */,
 				23474D071B5303A1004D05BE /* QuerySet.swift in Sources */,
+				237BC1131B6EC8C500F07892 /* typeToTableName.swift in Sources */,
 				23E554F41B645250001BD64B /* MetaItem.swift in Sources */,
 				23F3CFBA1B45FF2400D8AD4C /* AmigoModel.swift in Sources */,
 				23A5D0751B62E7C000915F24 /* Relationship.swift in Sources */,

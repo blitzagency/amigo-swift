@@ -63,8 +63,6 @@ class Child: AmigoModel{
 }
 
 // ---- Many To Many (through model) ----
-// A Parent can have Many Children
-// and children can have Many Parents
 
 class Workout: AmigoModel{
     dynamic var id: NSNumber!

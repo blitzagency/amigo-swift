@@ -112,7 +112,6 @@ mapping as follows:
 
 .. code-block:: swift
 
-
     import Amigo
 
     class Dog: AmigoModel{
@@ -126,7 +125,6 @@ mapping as follows:
         dynamic var dog: Dog!
     }
 
-
     let dog = ORMModel(Dog.self,
         Column("id", type: Int.self, primaryKey: true)
         Column("label", type: String.self)
@@ -139,8 +137,7 @@ mapping as follows:
         Column("dog", type: ForeignKey(dog))
     )
 
-
-**OR** using the column:
+**or using the column itself**
 
 .. code-block:: swift
 
@@ -225,3 +222,152 @@ We can then query the One To Many Relationship this way:
 
 Many To Many
 -------------------
+
+
+Amigo can also represent Many To Many Relationships. It will build the
+intermediate table for you as well.
+
+In the case of a Managed Object Model, a Many To Many is represented by a
+**Relationship** that has a type on :code:`To Many` on one side and
+:code:`To Many` on the other side, aka the inverse relationship.
+
+Starting with the following data models:
+
+.. code-block:: swift
+    import Amigo
+
+    // ---- Many To Many ----
+    // A Parent can have Many Children
+    // and children can have Many Parents
+
+    class Parent: AmigoModel{
+        dynamic var id: NSNumber!
+        dynamic var label: String!
+    }
+
+    class Child: AmigoModel{
+        dynamic var id: NSNumber!
+        dynamic var label: String!
+    }
+
+Now, lets manually map them and create the relationship:
+
+.. code-block:: swift
+
+    let parent = ORMModel(Parent.self,
+        Column("id", type: Int.self, primaryKey: true),
+        Column("label", type: String.self),
+        ManyToMany("children", using: Child.self)
+    )
+
+    let child = ORMModel(Child.self,
+        Column("id", type: Int.self, primaryKey: true),
+        Column("label", type: String.self),
+    )
+
+    let engine = SQLiteEngineFactory(":memory:", echo: true)
+    amigo = Amigo([parent, child], factory: engine)
+    amigo.createAll()
+
+    let session = amigo.session
+
+    let p1 = Parent()
+    p1.label = "Foo"
+
+    let c1 = Child()
+    c1.label = "Baz"
+
+    let c2 = Child()
+    c2.label = "Qux"
+
+    session.add(p1,  c1, c2)
+
+    // add 2 children to p1
+    session.using(p1).relationship("children").add(c1, c2)
+
+    var results = session
+        .query(Child)
+        .using(p1)
+        .relationship("children")
+        .all()
+
+    print(results.count)
+
+
+Extra Fields on Many To Many Relationships
+-------------------------------------------
+
+Sometimes you need more information on a Many To Many Relationship
+than just the 2 original models. We have shamelessly taken this concept
+from Django and matched their name: "Though" Models.
+
+In the case of a Managed Object Model, a Many To Many with a "Through" models
+is represented by a **Relationship** that has a type on :code:`To Many` on one side and
+:code:`To Many` on the other side, aka the inverse relationship. Additionally,
+the :code:`User Info` of the relationship has the following key value pair:
+
+**throughModel** = **Fully Qualified AmigoModel Subclass Name**
+
+Lets make a manual example.
+
+.. code-block:: swift
+    import Amigo
+
+
+    // ---- Many To Many (through model) ----
+    // A Workout can have Many Exercises
+    // An exercise can belong to Many Workouts
+    // We attach some extra Meta information to
+    // the relationship though.
+
+    class Workout: AmigoModel{
+        dynamic var id: NSNumber!
+        dynamic var label: String!
+    }
+
+    class WorkoutExercise: AmigoModel{
+        dynamic var id: NSNumber!
+        dynamic var label: String!
+    }
+
+    class WorkoutMeta: AmigoModel{
+        dynamic var id: NSNumber!
+        dynamic var duration: NSNumber!
+        dynamic var position: NSNumber!
+        dynamic var exercise: WorkoutExercise!
+        dynamic var workout: Workout!
+    }
+
+
+Now, lets manually map them and create the relationship:
+
+.. code-block:: swift
+
+    let workout = ORMModel(Workout.self,
+        Column("id", type: Int.self, primaryKey: true),
+        Column("label", type: String.self),
+        ManyToMany("exercises", using: WorkoutExercise.self, throughModel: WorkoutMeta.self)
+    )
+
+    let workoutExercise = ORMModel(WorkoutExercise.self,
+        Column("id", type: Int.self, primaryKey: true),
+        Column("label", type: String.self),
+    )
+
+    let workoutMeta = ORMModel(WorkoutMeta.self,
+        Column("id", type: Int.self, primaryKey: true),
+        Column("duration", type: Int.self),
+        Column("position", type: Int.self),
+        Column("exercise", type: ForeignKey(workoutExercise)),
+        Column("workout", type: ForeignKey(workout))
+    )
+
+
+.. note ::
+
+    Look at the mapping for :code:`WorkoutMeta`. If you are going to
+    use a :code:`throughModel` the model that will we will go though
+    **MUST** contain 2 :code:`ForeignKey` columns. They **MUST** map to
+    the 2 columns that are required for the many-to-many relationship.
+
+

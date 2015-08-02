@@ -24,5 +24,5 @@ up so we can create our schema:
     amigo.createAll()
 
 Note, in the example above `Amigo` can process a :code:`ManagedObjectModel`
-to create it's schema. See :doc:`mom` for more.
+to create it's schema. See :doc:`models/mom` for more.
 

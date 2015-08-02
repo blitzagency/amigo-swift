@@ -46,6 +46,13 @@ public class ORMModel: Hashable{
         var tmpPrimaryKey: Column!
         var tmpRelationships = [String: Relationship]()
 
+
+        relationshipList.map{ (each: Relationship) -> Void in
+            if let m2m = each as? ManyToMany, let partial = m2m.partial{
+                partial(type: qualifiedType)
+            }
+        }
+
         type = qualifiedType
         label = nameParts[1]
         table = Table(tableName, metadata: ORMModel.metadata, items: schemaItems)

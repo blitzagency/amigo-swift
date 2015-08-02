@@ -21,8 +21,7 @@ extension Mapper{
     }
 
     func dottedNameToTableName(name: String) -> String{
-        let parts = split(name.unicodeScalars){ $0 == "." }.map{ String($0).lowercaseString }
-        return "_".join(parts)
+        return typeToTableName(name)
     }
 }
 

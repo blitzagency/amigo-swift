@@ -37,7 +37,9 @@ Contents:
    :maxdepth: 2
 
    setup/index
-
+   models/index
+   querying/index
+   sessions/index
 
 
 Indices and tables
