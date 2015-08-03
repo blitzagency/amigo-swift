@@ -99,6 +99,7 @@ https://github.com/blitzagency/amigo-swift/blob/master/Amigo/Column.swift
 
 One additional type exists for Column initialization and that's :code:`Amigo.ForeignKey`
 
+.. _foreign-key:
 
 ForeignKeys
 -------------------
@@ -149,6 +150,7 @@ mapping as follows:
     )
 
 
+.. _one-to-many:
 
 One To Many
 -------------------
@@ -220,6 +222,8 @@ We can then query the One To Many Relationship this way:
         .relationship("people")
         .all()
 
+.. _many-to-many:
+
 Many To Many
 -------------------
 
@@ -234,6 +238,7 @@ In the case of a Managed Object Model, a Many To Many is represented by a
 Starting with the following data models:
 
 .. code-block:: swift
+
     import Amigo
 
     // ---- Many To Many ----

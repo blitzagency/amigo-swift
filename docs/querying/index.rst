@@ -5,7 +5,7 @@ Querying with :code:`Amigo` is similar to querying with Django or
 SQLAlchemy. Lets run though a few examples. In each of the following
 examples we will assume we have already done our model mapping
 and we have an :code:`amigo` instance available to us. For
-more information on model mapping see: :doc:`models/index`
+more information on model mapping see: :doc:`/models/index`
 
 
 Get an object by id
@@ -45,7 +45,7 @@ Order objects
         .all()
 
 
-FIlter objects
+Filter objects
 ----------------------------------
 
 :code:`filter`
@@ -66,10 +66,12 @@ FIlter objects
     then passed to FMDB for escaping/replacement.
 
 
-Full foreign key in 1 query
------------------------------
+Full foreign key in one query (aka JOIN)
+----------------------------------------
 
 :code:`selectRelated`
+
+See :ref:`foreign-key` for more.
 
 .. code-block:: swift
 
@@ -147,3 +149,36 @@ Filter and Order By related fields
         .filter("id > 1 AND dog.id > 1") // note the dot notation
         .orderBy("dog.id", ascending: false) // note the dot notation
         .all()
+
+
+One-To-Many Query
+-----------------------------------
+
+:code:`relationship`
+
+See :ref:`one-to-many` for more.
+
+.. code-block:: swift
+
+    var results = session
+        .query(People)
+        .using(d1)
+        .relationship("people")
+        .all()
+
+
+Many-To-Many Query
+-----------------------------------
+
+:code:`relationship`
+
+See :ref:`many-to-many` for more.
+
+.. code-block:: swift
+
+    var results = session
+        .query(Child)
+        .using(p1)
+        .relationship("children")
+        .all()
+
