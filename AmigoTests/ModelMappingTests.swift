@@ -25,7 +25,7 @@ class ModelMappingTests: XCTestCase {
         let dog = ORMModel(Dog.self,
             Column("id", type: Int.self, primaryKey: true),
             Column("label", type: String.self),
-            OneToMany("people", using: People.self, on: "dog")
+            OneToMany("people", using: People.self)
         )
 
         let people = ORMModel(People.self,

@@ -51,6 +51,10 @@ public class ORMModel: Hashable{
             if let m2m = each as? ManyToMany, let partial = m2m.partial{
                 partial(type: qualifiedType)
             }
+
+            if let o2m = each as? OneToMany{
+                o2m.initOriginType(qualifiedType)
+            }
         }
 
         type = qualifiedType

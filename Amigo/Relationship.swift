@@ -85,17 +85,22 @@ public class OneToMany: Relationship, CustomStringConvertible{
     public let type = RelationshipType.OneToMany
 
     let table: String
-    let column: String
+    var column: String!
+    var originTable: String!
 
-    public convenience init<T: AmigoModel>(_ label: String, using: T.Type, on: String){
+    public convenience init<T: AmigoModel>(_ label: String, using: T.Type){
         let tableName = typeToTableName(using)
-        self.init(label, table: tableName, column: on)
+        self.init(label, table: tableName, column: nil)
     }
 
-    public init(_ label: String, table: String, column: String){
+    public init(_ label: String, table: String, column: String? = nil){
         self.label = label
         self.table = table
         self.column = column
+    }
+
+    func initOriginType(value: String){
+        originTable = typeToTableName(value)
     }
 
     public var description: String{

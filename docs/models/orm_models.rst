@@ -181,7 +181,7 @@ In code it would look like this:
     let dog = ORMModel(Dog.self,
         Column("id", type: Int.self, primaryKey: true),
         Column("label", type: String.self),
-        OneToMany("people", using: Person.self, on: "dog")
+        OneToMany("people", using: Person.self)
     )
 
     let person = ORMModel(Person.self,

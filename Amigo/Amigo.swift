@@ -70,7 +70,30 @@ public class Amigo: AmigoConfigured{
             typeIndex: typeIndex
         )
 
+        initializeOneToMany(models)
         initializeManyToMany(models)
+
+    }
+
+    func initializeOneToMany(models:[ORMModel]){
+        let relationships = models
+            .map{$0.relationships.values.array}
+            .flatMap{$0}
+
+        let o2m = relationships.filter{$0 is OneToMany}.map{$0 as! OneToMany}
+
+        for each in o2m{
+            if each.column == nil{
+                let originModel = config.tableIndex[each.originTable]!
+                let destinationModel = config.tableIndex[each.table]!
+
+                for (key, value) in destinationModel.foreignKeys{
+                    if value.foreignKey!.relatedTable == originModel.table{
+                        each.column = key
+                    }
+                }
+            }
+        }
     }
 
     func initializeManyToMany(models:[ORMModel]){
