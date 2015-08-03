@@ -160,6 +160,7 @@ See :ref:`one-to-many` for more.
 
 .. code-block:: swift
 
+    let session = amigo.session
     var results = session
         .query(People)
         .using(d1)
@@ -176,6 +177,7 @@ See :ref:`many-to-many` for more.
 
 .. code-block:: swift
 
+    let session = amigo.session
     var results = session
         .query(Child)
         .using(p1)
