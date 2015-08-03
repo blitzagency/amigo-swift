@@ -1,13 +1,20 @@
 Welcome to Amigo!
 =================================
 
-A Rough Draft of a SQLite ORM for Swift backed by `FMDB <https://github.com/ccgus/fmdb>`_
+A Rough Draft of a SQLite ORM for Swift 2.0+ backed by `FMDB <https://github.com/ccgus/fmdb>`_
 
 
 But What About CoreData?
 ------------------------
 
 Yup, CoreData...
+
+
+Requirements
+------------------------
+
+ - Swift 2.0 (aka iOS 9+, os x 10.11+)
+ - CoreData
 
 
 The Deal
