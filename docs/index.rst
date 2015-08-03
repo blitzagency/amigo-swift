@@ -1,12 +1,7 @@
-.. Amigo documentation master file, created by
-   sphinx-quickstart on Fri Jul 31 12:14:29 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to Amigo's documentation!
+Welcome to Amigo!
 =================================
 
-A SQLite ORM for Swift backed by FMDB.
+A Rough Draft of a SQLite ORM for Swift backed by `FMDB <https://github.com/ccgus/fmdb>`_
 
 
 But What About CoreData?
