@@ -8,7 +8,7 @@ and we have an :code:`amigo` instance available to us. For
 more information on model mapping see: :doc:`models/index`
 
 
-Get an object by id:
+Get an object by id
 ---------------------
 
 :code:`get` returns an optional model as it may fail if the id
@@ -20,7 +20,7 @@ is not present.
     let maybeDog: Dog? = session.query(Dog).get(1)
 
 
-Get all objects:
+Get all objects
 ----------------------------------
 
 :code:`all`
@@ -31,7 +31,7 @@ Get all objects:
     let dogs: [Dog] = session.query(Dog).all()
 
 
-Order objects:
+Order objects
 ----------------------------------
 
 :code:`orderBy`
@@ -45,7 +45,7 @@ Order objects:
         .all()
 
 
-FIlter objects:
+FIlter objects
 ----------------------------------
 
 :code:`filter`
@@ -57,6 +57,13 @@ FIlter objects:
         .query(Dog)
         .filter("id > 3")
         .all()
+
+.. note ::
+
+    Filter strings are converted into a :code:`NSPredicate` behind the
+    scenes. When using the :code:`SQLiteEngine`, the constant params are
+    extracted and replaced with `?` in generated query. The params are
+    then passed to FMDB for escaping/replacement.
 
 
 Full foreign key in 1 query
