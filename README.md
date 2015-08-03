@@ -1,5 +1,5 @@
 # Amigo
-A SQLite ORM for Swift backed by FMDB.
+A Rough Draft of a SQLite ORM for Swift 2.0+ backed by FMDB
 
 Docs in progress are here:
 

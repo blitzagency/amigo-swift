@@ -140,7 +140,7 @@ mapping as follows:
     )
 
 
-**OR** using the column:
+**OR** using the column itself:
 
 .. code-block:: swift
 
