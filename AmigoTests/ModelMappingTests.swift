@@ -9,6 +9,7 @@
 import XCTest
 import Amigo
 
+
 class ModelMappingTests: XCTestCase {
     var amigo: Amigo!
 

@@ -92,7 +92,7 @@ public class EntityDescriptionMapper: AmigoEntityDescriptionMapper{
         let throughModel : String?
 
         if let through = obj.userInfo?["throughModel"]{
-            throughModel = through as! String
+            throughModel = through as? String
         } else{
             throughModel = nil
         }

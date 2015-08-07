@@ -256,7 +256,7 @@ public struct SQLiteCompiler: Compiler{
             return ("?", expression.constantValue)
         case .KeyPathExpressionType:
 
-            let parts = split(expression.keyPath.unicodeScalars){$0 == "."}.map(String.init).map{$0.lowercaseString}
+            let parts = expression.keyPath.unicodeScalars.split{$0 == "."}.map(String.init).map{$0.lowercaseString}
             let column: String
 
             if parts.count == 1{

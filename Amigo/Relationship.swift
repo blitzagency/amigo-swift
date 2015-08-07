@@ -61,7 +61,7 @@ public class ManyToMany: Relationship, CustomStringConvertible, Hashable{
         self.tables = [l, r].sort()
 
         if let throughModel = throughModel{
-            self.throughModel = String(throughModel)
+            self.throughModel = throughModel.description()
         }
 
         self.partial = nil

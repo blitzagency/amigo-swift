@@ -177,7 +177,6 @@
 		23B8F27E1B41978C00153865 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23B8F2871B4197A700153865 /* Amigo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Amigo.swift; sourceTree = "<group>"; };
 		23B8F2891B4198E200153865 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		23C525411B446F8200B98681 /* AmigoMetaData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmigoMetaData.swift; sourceTree = "<group>"; };
 		23C525431B446FF800B98681 /* AmigoMeta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmigoMeta.swift; sourceTree = "<group>"; };
 		23C754A81B5C499F00584D1E /* SQLiteEngine+Transactions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SQLiteEngine+Transactions.swift"; sourceTree = "<group>"; };
 		23C754AE1B5C4DB700584D1E /* Insert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Insert.swift; sourceTree = "<group>"; };
@@ -311,9 +310,9 @@
 				23B8F2721B41978C00153865 /* Info.plist */,
 				23B8F2871B4197A700153865 /* Amigo.swift */,
 				23ED242D1B41BD1F00C2AF28 /* QuerySet.swift */,
+				23474CFB1B52F3D2004D05BE /* ORMModel.swift */,
 				23ED24291B41B34400C2AF28 /* AmigoSession.swift */,
 				23ED242B1B41B35900C2AF28 /* AmigoConfiguration.swift */,
-				23C525411B446F8200B98681 /* AmigoMetaData.swift */,
 				23F3CFB91B45FF2400D8AD4C /* AmigoModel.swift */,
 			);
 			path = Amigo;
@@ -391,7 +390,6 @@
 				23F3CFC51B46CF4500D8AD4C /* MetaModel.swift */,
 				23F3CFC71B46E15E00D8AD4C /* ForeignKey.swift */,
 				23B43AEB1B49E61900F90DFD /* MetaData.swift */,
-				23474CFB1B52F3D2004D05BE /* ORMModel.swift */,
 			);
 			name = Meta;
 			sourceTree = "<group>";

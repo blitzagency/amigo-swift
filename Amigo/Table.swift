@@ -77,34 +77,3 @@ public class Table: SchemaItem, FromClause{
         return "<Table: \(label)>"
     }
 }
-
-//public struct Table : CustomStringConvertible{
-//
-//    public let label: String
-//    public let type: AmigoModel.Type
-//
-//    public static func fromEntityDescription(value: NSEntityDescription) -> Table{
-//        let className = value.managedObjectClassName
-//        let parts = split(className.characters){ $0 == "."}.map{String($0).lowercaseString}
-//        let type = NSClassFromString(className) as! AmigoModel.Type
-//        let label = "\(parts[0])_\(value.name!.lowercaseString)"
-//
-//        if parts[0] == "nsmanagedobject"{
-//            fatalError("Entity of type '\(value.name!)' must specify a backing class")
-//        }
-//        return Table(label: label, type: type)
-//    }
-//
-//    public func select() -> Table{
-//        return self
-//    }
-//
-//    public func join(table:Table) -> Table{
-//        return self
-//    }
-//
-//
-//    public var description: String {
-//        return "<Table: \(label)>"
-//    }
-//}

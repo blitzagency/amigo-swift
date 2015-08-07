@@ -16,8 +16,7 @@ public class Amigo: AmigoConfigured{
     public let engineFactory: EngineFactory
 
     public func query<T: AmigoModel>(value: T.Type) -> QuerySet<T>{
-        //let tableName = mapper.dottedNameToTableName(String(value))
-        let model = typeIndex[String(value)]!
+        let model = typeIndex[value.description()]!
         return QuerySet<T>(model: model, config: threadConfig())
     }
 
@@ -56,9 +55,9 @@ public class Amigo: AmigoConfigured{
         var tableIndex = [String:ORMModel]()
         var typeIndex = [String:ORMModel]()
 
-        models.map{ model -> () in
-            tableIndex[model.table.label] = model
-            typeIndex[model.type] = model
+        models.forEach{
+            tableIndex[$0.table.label] = $0
+            typeIndex[$0.type] = $0
         }
 
         engineFactory = factory
@@ -162,7 +161,6 @@ public class Amigo: AmigoConfigured{
             let table = Table(value.tableName, metadata: ORMModel.metadata, items: columns)
 
             m2mHash[value]?.map{ (value: ManyToMany) -> Void in
-                print(value.label)
                 value.associationTable = table
             }
         }

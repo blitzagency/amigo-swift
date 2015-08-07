@@ -141,13 +141,14 @@ public class AmigoSession: AmigoConfigured{
     }
 
     public func query<T: AmigoModel>(value: T.Type) -> QuerySet<T>{
-        //let tableName = mapper.dottedNameToTableName(String(value))
-        let model = typeIndex[String(value)]!
+        let type = value.description()
+        let model = typeIndex[type]!
         return QuerySet<T>(model: model, config: config)
     }
 
     public func using<U: AmigoModel>(obj: U) -> AmigoSessionModelAction<U>{
-        let model = config.typeIndex[String(U)]!
+        let type = U.description()
+        let model = config.typeIndex[type]!
         let action = AmigoSessionModelAction(obj, model: model, session: self)
 
         return action
@@ -170,7 +171,8 @@ public class AmigoSession: AmigoConfigured{
     }
 
     public func addModel<T: AmigoModel>(obj: T){
-        let model = typeIndex[String(obj.dynamicType)]!
+        let type = obj.dynamicType.description()
+        let model = typeIndex[type]!
         if obj.valueForKey(model.primaryKey.label) == nil{
             insert(obj, model: model)
         } else {
@@ -180,7 +182,8 @@ public class AmigoSession: AmigoConfigured{
 
 
     public func deleteModel<T: AmigoModel>(obj: T){
-        let model = typeIndex[String(obj.dynamicType)]!
+        let type = obj.dynamicType.description()
+        let model = typeIndex[type]!
         let id = model.primaryKey.label
         let value = obj.valueForKey(id)!
         let predicate = NSPredicate(format: "\(id) = \(value)")
@@ -222,7 +225,7 @@ public class AmigoSession: AmigoConfigured{
             }
 
             if let column = each.foreignKey{
-                let parts = split(each.label.unicodeScalars){ $0 == "_"}.map(String.init)
+                let parts = each.label.unicodeScalars.split{ $0 == "_"}.map(String.init)
 
                 if let target = obj.valueForKey(parts[0]) as? AmigoModel{
                     let fkModel = config.tableIndex[column.relatedColumn.table!.label]!
@@ -305,7 +308,7 @@ public class AmigoSession: AmigoConfigured{
             // this is a duplicated block of code from add() above.
             // refactor this...
             if let column = each.foreignKey{
-                let parts = split(each.label.unicodeScalars){ $0 == "_"}.map(String.init)
+                let parts = each.label.unicodeScalars.split{ $0 == "_"}.map(String.init)
 
                 if let target = obj.valueForKey(parts[0]) as? AmigoModel{
                     let fkModel = config.tableIndex[column.relatedColumn.table!.label]!

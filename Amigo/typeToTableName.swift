@@ -10,11 +10,10 @@ import Foundation
 
 
 func typeToTableName<T: AmigoModel>(type: T.Type) -> String{
-    let parts = split(String(type).unicodeScalars){ $0 == "." }.map{ String($0).lowercaseString }
-    return "_".join(parts)
+    return typeToTableName(type.description())
 }
 
 func typeToTableName(type: String) -> String{
-    let parts = split(type.unicodeScalars){ $0 == "." }.map{ String($0).lowercaseString }
+    let parts = type.unicodeScalars.split{ $0 == "." }.map{ String($0).lowercaseString }
     return "_".join(parts)
 }

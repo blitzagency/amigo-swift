@@ -127,7 +127,7 @@ public class QuerySet<T: AmigoModel>: AmigoConfigured{
 
         if let using = _using,
            let key = _relationship,
-           let relatedModel = config.typeIndex[String(using.dynamicType)],
+           let relatedModel = config.typeIndex[using.dynamicType.description()],
            let relationship = relatedModel.relationships[key] as? ManyToMany{
             /*
                 SELECT w.label, m.workout_id, m.id, m.type, m.count, e.label
@@ -165,7 +165,7 @@ public class QuerySet<T: AmigoModel>: AmigoConfigured{
         }
 
         select.orderBy(_orderBy.map{ (value: OrderBy) -> OrderBy in
-            let parts = split(value.keyPath.unicodeScalars){$0 == "."}.map(String.init)
+            let parts = value.keyPath.unicodeScalars.split{$0 == "."}.map(String.init)
 
             if parts.count == 1{
                 let name = model.table.c[parts[0]]!.qualifiedLabel!
@@ -200,7 +200,7 @@ public class QuerySet<T: AmigoModel>: AmigoConfigured{
         var predicate: NSPredicate? = maybePredicate
 
 
-        if let using = _using, let key = _relationship, let relatedModel = config.typeIndex[String(using.dynamicType)]{
+        if let using = _using, let key = _relationship, let relatedModel = config.typeIndex[using.dynamicType.description()]{
             // there is gonna be a problem here. If 2 libs use "author" the 
             // qualified names will be fine, but the dotted names
             // could have naming conflicts that can't be resolved 
@@ -246,7 +246,7 @@ public class QuerySet<T: AmigoModel>: AmigoConfigured{
     func getExplicitColumns() -> [Column]{
 
         let cols = _values.map{ value -> Column in
-            let parts = split(value.characters){ $0 == "."}.map(String.init)
+            let parts = value.unicodeScalars.split{ $0 == "."}.map(String.init)
 
             if parts.count == 1{
                 return model.table.columns[parts[0]]!

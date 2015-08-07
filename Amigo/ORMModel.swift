@@ -25,8 +25,8 @@ public class ORMModel: Hashable{
     public var throughModelRelationship: ManyToMany?
 
     public convenience init<T:AmigoModel>(_ qualifiedType: T.Type, _ properties: MetaItem...){
-        let qualifiedType = String(qualifiedType)
-        self.init(qualifiedType, properties: properties)
+        let type = qualifiedType.description()
+        self.init(type, properties: properties)
     }
 
     public convenience init(_ qualifiedType: String, properties: MetaItem...){
@@ -36,8 +36,8 @@ public class ORMModel: Hashable{
     public init(_ qualifiedType: String, properties:[MetaItem]){
         let schemaItems = properties.filter{$0 is SchemaItem}.map{ $0 as! SchemaItem}
         let relationshipList = properties.filter{$0 is Relationship}.map{ $0 as! Relationship }
-        let nameParts = split(qualifiedType.unicodeScalars)
-                       { $0 == "." }
+        let nameParts = qualifiedType.unicodeScalars
+                       .split{ $0 == "." }
                        .map{ String($0).lowercaseString }
 
         let tableName = "_".join(nameParts)
@@ -69,7 +69,7 @@ public class ORMModel: Hashable{
                 // `foo_id`, but the relationship will be something
                 // like `foo` for selectRelated in the QuerySet,
                 // so we strip off the _id
-                let parts = split(value.label.characters){ $0 == "_" }
+                let parts = value.label.unicodeScalars.split{ $0 == "_" }
                     .map(String.init)
 
                 tmpForeignKeys[parts[0]] = value

@@ -18,7 +18,7 @@ public class AmigoMetaData{
     }
 
     public func metaModelForType<T: AmigoModel>(type: T.Type) -> MetaModel{
-        let key = String(type)
+        let key = type.description()
         return metaModelForName(key)
     }
 
