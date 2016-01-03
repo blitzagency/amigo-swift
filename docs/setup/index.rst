@@ -10,10 +10,9 @@ as of v 2.6 FMDB, does suport Carthage.
 
 Drop this into your :code:`Cartfile`:
 
-.. code-block::
+::
 
     github "blitzagency/amigo-swift" ~> 0.2.0
-
 
 Admittedly, we are probably not the best at the whole,
 *"How do you share an Xcode Project"* thing, so any recommendations
