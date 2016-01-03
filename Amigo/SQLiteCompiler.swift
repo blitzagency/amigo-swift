@@ -263,7 +263,7 @@ public struct SQLiteCompiler: Compiler{
                 column = context.table.columns[parts[0]]!.qualifiedLabel!
             } else if parts.count == 2{
                 let key = parts[0] + "_id"
-                column = context.table.columns[key]!.foreignKey!.relatedColumn.qualifiedLabel!
+                column = context.table.columns[key]!.foreignKey!.relatedTable.columns[parts[1]]!.qualifiedLabel!
             } else { // fully qualified (count = 3) namespace | table | column
                 let key = parts[1] + "_id"
                 column = context.table.columns[key]!.foreignKey!.relatedColumn.qualifiedLabel!
