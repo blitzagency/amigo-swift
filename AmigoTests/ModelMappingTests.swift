@@ -54,7 +54,7 @@ class ModelMappingTests: XCTestCase {
 
         session.add(d1, p1, p2)
 
-        var results = session
+        let results = session
             .query(People)
             .using(d1)
             .relationship("people")
@@ -176,7 +176,7 @@ class ModelMappingTests: XCTestCase {
         session.add(w1, e1, m1)
 
 
-        var results = session
+        let results = session
             .query(WorkoutMeta)
             .using(w1)
             .relationship("exercises")

@@ -55,7 +55,8 @@ class AmigoSessionTests: AmigoTestBase {
 
     func testInsert(){
 
-        XCTAssertNil(amigo.query(Dog).get(1))
+        var candidate = amigo.query(Dog).get(1)
+        XCTAssertNil(candidate)
 
         let session = amigo.session
         let o1 = Dog()
@@ -66,7 +67,9 @@ class AmigoSessionTests: AmigoTestBase {
         session.add(o1)
 
         XCTAssertNotNil(o1.id)
-        XCTAssertNotNil(amigo.query(Dog).get(1))
+
+        candidate = amigo.query(Dog).get(1)
+        XCTAssertNotNil(candidate)
     }
 
     func testDelete(){
@@ -77,14 +80,18 @@ class AmigoSessionTests: AmigoTestBase {
 
         session.add(o1)
 
-        XCTAssertNotNil(amigo.query(Dog).get(1))
+        var candidate = session.query(Dog).get(1)
+        XCTAssertNotNil(candidate)
 
         session.delete(o1)
-        XCTAssertNil(amigo.query(Dog).get(1))
+
+        candidate = session.query(Dog).get(1)
+        XCTAssertNil(candidate)
     }
 
     func testUpdate(){
-        XCTAssertNil(amigo.query(Dog).get(1))
+        var candidate = amigo.query(Dog).get(1)
+        XCTAssertNil(candidate)
 
         let session = amigo.session
         let o1 = Dog()
@@ -98,8 +105,8 @@ class AmigoSessionTests: AmigoTestBase {
 
         session.add(o1)
 
-        let dog = amigo.query(Dog).get(1)
-        XCTAssertEqual(dog!.label, "ollie")
+        candidate = amigo.query(Dog).get(1)
+        XCTAssertEqual(candidate!.label, "ollie")
     }
 
     func testUpdateFromNoForeignKey(){

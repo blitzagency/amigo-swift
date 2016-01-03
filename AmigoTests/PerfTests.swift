@@ -46,7 +46,7 @@ class PerfTests: XCTestCase {
                 let d = Dog()
                 d.label = "foo"
 
-                //session.add(d)
+                session.add(d)
             }
 
             session.commit()
@@ -57,7 +57,7 @@ class PerfTests: XCTestCase {
         var statements = [String]()
 
         self.measureBlock{
-            for _ in 0..<20000{
+            for _ in 0..<10000{
                 let d = Dog()
                 d.label = "foo"
                 statements.append("INSERT INTO amigotests_dog (label) VALUES ('foo');")
@@ -76,7 +76,7 @@ class PerfTests: XCTestCase {
         }
 
         self.measureBlock{
-            "\n".join(statements)
+            statements.joinWithSeparator("\n")
         }
         
     }
@@ -86,8 +86,8 @@ class PerfTests: XCTestCase {
         let a2 = [3, 4]
         var out = [Int]()
 
-        out.extend(a1)
-        out.extend(a2)
+        out.appendContentsOf(a1)
+        out.appendContentsOf(a2)
 
         print(out)
 

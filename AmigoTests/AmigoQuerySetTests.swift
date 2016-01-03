@@ -65,14 +65,72 @@ class AmigoQuerySetTests: AmigoTestBase {
             .query(People)
             .selectRelated("dog")
             .orderBy("dog.label", ascending: false)
-            .filter("dog.label = Lucy")
-            .limit(1)
-            .offset(1)
             .all()
 
         XCTAssertEqual(people.count, 2)
         XCTAssertEqual(people[0].id, 2)
         XCTAssertEqual(people[0].dog.label, "Ollie")
+    }
+
+    func testFilterBy(){
+        let session = amigo.session
+
+        let d1 = Dog()
+        d1.label = "Lucy"
+
+        let d2 = Dog()
+        d2.label = "Ollie"
+
+        let p1 = People()
+        p1.label = "Foo"
+        p1.dog = d1
+
+        let p2 = People()
+        p2.label = "Bar"
+        p2.dog = d2
+
+        session.add(p1)
+        session.add(p2)
+
+        let people = session
+            .query(People)
+            .filter("label = 'Foo'")
+            .all()
+
+        XCTAssertEqual(people.count, 1)
+        XCTAssertEqual(people[0].id, 1)
+    }
+
+    func testFilterByDifferentTable(){
+        let session = amigo.session
+
+        let d1 = Dog()
+        d1.label = "Lucy"
+
+        let d2 = Dog()
+        d2.label = "Ollie"
+
+        let p1 = People()
+        p1.label = "Foo"
+        p1.dog = d1
+
+        let p2 = People()
+        p2.label = "Bar"
+        p2.dog = d2
+
+        session.add(p1)
+        session.add(p2)
+
+        let people = session
+            .query(People)
+            .selectRelated("dog")
+            .orderBy("dog.label", ascending: false)
+            .filter("dog.label = 'Lucy'")
+            .all()
+
+        XCTAssertEqual(people.count, 1)
+        XCTAssertEqual(people[0].id, 1)
+        XCTAssertEqual(people[0].dog.label, "Lucy")
     }
 
     func testOrderBySameTable(){
@@ -116,11 +174,13 @@ class AmigoQuerySetTests: AmigoTestBase {
         p1.label = "Ollie Cat"
         p1.dog = d1
 
-        XCTAssertNil(session.query(Dog).get(1))
+        var candidate = session.query(Dog).get(1)
+        XCTAssertNil(candidate)
 
         session.add(p1)
 
-        XCTAssertNotNil(session.query(Dog).get(1))
+        candidate = session.query(Dog).get(1)
+        XCTAssertNotNil(candidate)
     }
 
     func testSelectRelated(){
