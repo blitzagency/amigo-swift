@@ -27,7 +27,8 @@
 		23474D071B5303A1004D05BE /* QuerySet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ED242D1B41BD1F00C2AF28 /* QuerySet.swift */; };
 		237BC1071B6C22A200F07892 /* ModelMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237BC1061B6C22A200F07892 /* ModelMappingTests.swift */; };
 		237BC1131B6EC8C500F07892 /* typeToTableName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237BC1121B6EC8C500F07892 /* typeToTableName.swift */; };
-		238D38D21B472A4D00EC99E2 /* FMDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238D38D11B472A4100EC99E2 /* FMDB.framework */; };
+		238395E71C39BA2E00D5241F /* FMDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238395E61C39BA2E00D5241F /* FMDB.framework */; };
+		238395E81C39BEA800D5241F /* FMDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238395E61C39BA2E00D5241F /* FMDB.framework */; };
 		23A5D0751B62E7C000915F24 /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5D0741B62E7C000915F24 /* Relationship.swift */; };
 		23B43AEF1B4AAA0000F90DFD /* MetaTableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B43AE61B49DA3400F90DFD /* MetaTableTests.swift */; };
 		23B43AF01B4B037100F90DFD /* Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3CFC11B46CEF200D8AD4C /* Table.swift */; };
@@ -70,48 +71,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		238D38C81B472A4100EC99E2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 238D38C01B472A4100EC99E2 /* fmdb.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8DD76FA10486AA7600D96B5E;
-			remoteInfo = fmdb;
-		};
-		238D38CA1B472A4100EC99E2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 238D38C01B472A4100EC99E2 /* fmdb.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = EE4290EF12B42F870088BD94;
-			remoteInfo = libFMDB;
-		};
-		238D38CC1B472A4100EC99E2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 238D38C01B472A4100EC99E2 /* fmdb.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = BF5D041618416BB2008C5AA9;
-			remoteInfo = Tests;
-		};
-		238D38CE1B472A4100EC99E2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 238D38C01B472A4100EC99E2 /* fmdb.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 6290CBB5188FE836009790F8;
-			remoteInfo = "libFMDB-IOS";
-		};
-		238D38D01B472A4100EC99E2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 238D38C01B472A4100EC99E2 /* fmdb.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 238206C41B472877006AC1D2;
-			remoteInfo = "FMDB (iOS)";
-		};
-		238D38D31B472A5600EC99E2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 238D38C01B472A4100EC99E2 /* fmdb.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 238206C31B472877006AC1D2;
-			remoteInfo = "FMDB (iOS)";
-		};
 		23B8F2791B41978C00153865 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 23B8F2641B41978C00153865 /* Project object */;
@@ -150,7 +109,7 @@
 		23474D011B52F7F8004D05BE /* Mapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mapper.swift; sourceTree = "<group>"; };
 		237BC1061B6C22A200F07892 /* ModelMappingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelMappingTests.swift; sourceTree = "<group>"; };
 		237BC1121B6EC8C500F07892 /* typeToTableName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = typeToTableName.swift; sourceTree = "<group>"; };
-		238D38C01B472A4100EC99E2 /* fmdb.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = fmdb.xcodeproj; path = ../../../../../github/fmdb/fmdb.xcodeproj; sourceTree = "<group>"; };
+		238395E61C39BA2E00D5241F /* FMDB.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FMDB.framework; path = Carthage/Build/iOS/FMDB.framework; sourceTree = "<group>"; };
 		23A5D0741B62E7C000915F24 /* Relationship.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
 		23B43AE01B47489600F90DFD /* SQLiteEngineTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteEngineTests.swift; sourceTree = "<group>"; };
 		23B43AE61B49DA3400F90DFD /* MetaTableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetaTableTests.swift; sourceTree = "<group>"; };
@@ -206,7 +165,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				238D38D21B472A4D00EC99E2 /* FMDB.framework in Frameworks */,
+				238395E71C39BA2E00D5241F /* FMDB.framework in Frameworks */,
 				23B8F28A1B4198E200153865 /* CoreData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -217,6 +176,7 @@
 			files = (
 				23B8F28B1B41990C00153865 /* CoreData.framework in Frameworks */,
 				23B8F2781B41978C00153865 /* Amigo.framework in Frameworks */,
+				238395E81C39BEA800D5241F /* FMDB.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,18 +197,6 @@
 				237BC1121B6EC8C500F07892 /* typeToTableName.swift */,
 			);
 			name = Utils;
-			sourceTree = "<group>";
-		};
-		238D38C11B472A4100EC99E2 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				238D38C91B472A4100EC99E2 /* fmdb */,
-				238D38CB1B472A4100EC99E2 /* libFMDB.a */,
-				238D38CD1B472A4100EC99E2 /* Tests.xctest */,
-				238D38CF1B472A4100EC99E2 /* liblibFMDB-IOS.a */,
-				238D38D11B472A4100EC99E2 /* FMDB.framework */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		23B43AF91B4B76AF00F90DFD /* Expressions */ = {
@@ -279,8 +227,8 @@
 		23B8F2631B41978C00153865 = {
 			isa = PBXGroup;
 			children = (
+				238395E61C39BA2E00D5241F /* FMDB.framework */,
 				233118A31B6107B600943976 /* libsqlite3.tbd */,
-				238D38C01B472A4100EC99E2 /* fmdb.xcodeproj */,
 				23B8F2891B4198E200153865 /* CoreData.framework */,
 				23B8F26F1B41978C00153865 /* Amigo */,
 				23B8F27B1B41978C00153865 /* AmigoTests */,
@@ -421,7 +369,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				238D38D41B472A5600EC99E2 /* PBXTargetDependency */,
 			);
 			name = Amigo;
 			productName = Amigo;
@@ -435,6 +382,7 @@
 				23B8F2731B41978C00153865 /* Sources */,
 				23B8F2741B41978C00153865 /* Frameworks */,
 				23B8F2751B41978C00153865 /* Resources */,
+				238395E91C39BF6200D5241F /* Copy Carthage Frameworks */,
 			);
 			buildRules = (
 			);
@@ -474,12 +422,6 @@
 			mainGroup = 23B8F2631B41978C00153865;
 			productRefGroup = 23B8F26E1B41978C00153865 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 238D38C11B472A4100EC99E2 /* Products */;
-					ProjectRef = 238D38C01B472A4100EC99E2 /* fmdb.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				23B8F26C1B41978C00153865 /* Amigo */,
@@ -487,44 +429,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		238D38C91B472A4100EC99E2 /* fmdb */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = fmdb;
-			remoteRef = 238D38C81B472A4100EC99E2 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		238D38CB1B472A4100EC99E2 /* libFMDB.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libFMDB.a;
-			remoteRef = 238D38CA1B472A4100EC99E2 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		238D38CD1B472A4100EC99E2 /* Tests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = Tests.xctest;
-			remoteRef = 238D38CC1B472A4100EC99E2 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		238D38CF1B472A4100EC99E2 /* liblibFMDB-IOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "liblibFMDB-IOS.a";
-			remoteRef = 238D38CE1B472A4100EC99E2 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		238D38D11B472A4100EC99E2 /* FMDB.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = FMDB.framework;
-			remoteRef = 238D38D01B472A4100EC99E2 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		23B8F26B1B41978C00153865 /* Resources */ = {
@@ -542,6 +446,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		238395E91C39BF6200D5241F /* Copy Carthage Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/FMDB.framework",
+			);
+			name = "Copy Carthage Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		23B8F2681B41978C00153865 /* Sources */ = {
@@ -616,11 +538,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		238D38D41B472A5600EC99E2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "FMDB (iOS)";
-			targetProxy = 238D38D31B472A5600EC99E2 /* PBXContainerItemProxy */;
-		};
 		23B8F27A1B41978C00153865 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 23B8F26C1B41978C00153865 /* Amigo */;
@@ -652,6 +569,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/Carthage/Build/iOS";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -700,6 +618,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/Carthage/Build/iOS";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -727,6 +646,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Amigo/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -746,6 +669,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Amigo/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -759,6 +686,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = AmigoTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.blitzagency.AmigoTests;
@@ -771,6 +702,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = AmigoTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.blitzagency.AmigoTests;
