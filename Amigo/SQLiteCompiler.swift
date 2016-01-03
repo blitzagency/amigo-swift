@@ -47,8 +47,8 @@ public struct SQLiteCompiler: Compiler{
         let columnsSql = expression.columns.map(compile)
         let indexSql = table.indexes.map{compile(CreateIndex($0))}
 
-        let columns =  ",".join(columnsSql.map{"\n\t\($0)"})
-        let indexes = "\n".join(indexSql)
+        let columns =  columnsSql.map{"\n\t\($0)"}.joinWithSeparator(",")
+        let indexes = indexSql.joinWithSeparator("\n")
 
         var sql = "\(preamble) (\(columns)\n);"
 
@@ -73,7 +73,7 @@ public struct SQLiteCompiler: Compiler{
             options.append(column.optional ? "NULL" : "NOT NULL")
         }
 
-        joinedOptions = " ".join(options)
+        joinedOptions = options.joinWithSeparator(" ")
         sql = "\(column.label) \(type) \(joinedOptions)"
 
         return sql
@@ -93,7 +93,7 @@ public struct SQLiteCompiler: Compiler{
             preamble = "CREATE INDEX IF NOT EXISTS"
         }
 
-        let columns = ", ".join(index.columns.map{$0.label})
+        let columns = index.columns.map{$0.label}.joinWithSeparator(", ")
 
         result = "\(preamble) \(index.label) \(on) (\(columns));"
 
@@ -114,9 +114,9 @@ public struct SQLiteCompiler: Compiler{
             return t.label
         }
 
-        let columns = "SELECT " + ", ".join(columnsSql)
-        let tables = "\nFROM " + ", ".join(tablesSql)
-        let joins = "".join(joinsSql.map{"\n" + $0 })
+        let columns = "SELECT " + columnsSql.joinWithSeparator(", ")
+        let tables = "\nFROM " +  tablesSql.joinWithSeparator(", ")
+        let joins = joinsSql.map{"\n" + $0 }.joinWithSeparator("")
         let filter: String
         let limit: String
         let offset: String
@@ -137,7 +137,7 @@ public struct SQLiteCompiler: Compiler{
         }
 
         if orderParts.count > 0{
-            orderBy = "\nORDER BY " + ", ".join(orderParts)
+            orderBy = "\nORDER BY " + orderParts.joinWithSeparator(", ")
         } else {
             orderBy = ""
         }
@@ -172,8 +172,8 @@ public struct SQLiteCompiler: Compiler{
             placeholders.append("?")
         }
 
-        let columnData = ", ".join(columnLabels)
-        let placeholderData = ", ".join(placeholders)
+        let columnData = columnLabels.joinWithSeparator(", ")
+        let placeholderData = placeholders.joinWithSeparator(", ")
 
         let sql = "INSERT INTO \(expression.table.label) (\(columnData)) VALUES (\(placeholderData));"
         return sql
@@ -209,7 +209,7 @@ public struct SQLiteCompiler: Compiler{
             each.append("\(column.label) = ?")
         }
 
-        columns = ", ".join(each)
+        columns = each.joinWithSeparator(", ")
 
         if let predicate = expression.predicate{
             filter = "\nWHERE " + predicate
@@ -318,7 +318,7 @@ public struct SQLiteCompiler: Compiler{
             join = "NOT"
         }
 
-        compound.subpredicates.map{ value -> () in
+        compound.subpredicates.forEach{ value -> () in
             let predicate = value as! NSPredicate
             let context = PredicateContext(predicate:predicate , table: context.table, models: context.models)
             let (_sql, _params) = compile(context)
@@ -326,7 +326,7 @@ public struct SQLiteCompiler: Compiler{
             params = params + _params.map{Optional.Some($0)}
         }
 
-        let stmt = " \(join) ".join(sql)
+        let stmt =  sql.joinWithSeparator(" \(join) ")
 
         if compound.compoundPredicateType == .AndPredicateType{
             return ("(\(stmt))", params)
