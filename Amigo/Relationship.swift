@@ -68,11 +68,11 @@ public class ManyToMany: Relationship, CustomStringConvertible, Hashable{
     }
 
     public lazy var tableName: String = {
-        return "_".join(self.tables)
+        return self.tables.joinWithSeparator("_")
     }()
 
     public lazy var hashValue: Int = {
-        return "_".join(self.tables).hashValue
+        return self.tables.joinWithSeparator("_").hashValue
     }()
 
     public var description: String{

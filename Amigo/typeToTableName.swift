@@ -15,5 +15,5 @@ func typeToTableName<T: AmigoModel>(type: T.Type) -> String{
 
 func typeToTableName(type: String) -> String{
     let parts = type.unicodeScalars.split{ $0 == "." }.map{ String($0).lowercaseString }
-    return "_".join(parts)
+    return parts.joinWithSeparator("_")
 }

@@ -17,7 +17,7 @@ extension SQLiteEngine{
             compiler.compile(CreateTable($0))
         }
 
-        return "\n".join(tables)
+        return tables.joinWithSeparator("\n")
     }
 
     public func createAll(sql: String){

@@ -78,7 +78,7 @@ public class AmigoSessionModelAction<T: AmigoModel>{
     }
 
     public func add<U: AmigoModel>(other: [U]){
-        other.map(addModel)
+        other.forEach(addModel)
     }
 
     public func addModel<U: AmigoModel>(other: U){
@@ -163,11 +163,11 @@ public class AmigoSession: AmigoConfigured{
     }
 
     public func add<T: AmigoModel>(objs: [T]){
-        objs.map(self.addModel)
+        objs.forEach(self.addModel)
     }
 
     public func delete<T: AmigoModel>(objs: [T]){
-        objs.map(self.deleteModel)
+        objs.forEach(self.deleteModel)
     }
 
     public func addModel<T: AmigoModel>(obj: T){
@@ -264,7 +264,7 @@ public class AmigoSession: AmigoConfigured{
             var leftKey: String!
             var rightKey: String!
 
-            model.foreignKeys.map{ (key: String, c: Column) -> Void in
+            model.foreignKeys.forEach{ (key: String, c: Column) -> Void in
 
                 let fk = c.foreignKey!
                 if fk.relatedColumn == relationship.left.primaryKey{

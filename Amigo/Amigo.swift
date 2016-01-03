@@ -76,7 +76,7 @@ public class Amigo: AmigoConfigured{
 
     func initializeOneToMany(models:[ORMModel]){
         let relationships = models
-            .map{$0.relationships.values.array}
+            .map{Array($0.relationships.values)}
             .flatMap{$0}
 
         let o2m = relationships.filter{$0 is OneToMany}.map{$0 as! OneToMany}
@@ -98,14 +98,14 @@ public class Amigo: AmigoConfigured{
     func initializeManyToMany(models:[ORMModel]){
         // find all the ManyToMany Relationships so we can inject tables.
         let relationships = models
-            .map{$0.relationships.values.array}
+            .map{Array($0.relationships.values)}
             .flatMap{$0}
 
         let m2m = relationships.filter{$0 is ManyToMany}.map{$0 as! ManyToMany}
         var m2mHash = [ManyToMany: [ManyToMany]]()
         var m2mThroughModels = [ManyToMany]()
 
-        m2m.map{ (value: ManyToMany) -> Void in
+        m2m.forEach{ (value: ManyToMany) -> Void in
             value.left = config.tableIndex[value.tables[0]]!
             value.right = config.tableIndex[value.tables[1]]!
 
@@ -123,7 +123,7 @@ public class Amigo: AmigoConfigured{
                 model.throughModelRelationship = value
                 value.through = model
 
-                model.foreignKeys.values.array.map{ (c: Column) -> Void in
+                Array(model.foreignKeys.values).forEach{ (c: Column) -> Void in
                     if c.foreignKey!.relatedColumn == value.left.primaryKey || c.foreignKey!.relatedColumn == value.right.primaryKey{
                         c.optional = false
                     }
@@ -135,15 +135,15 @@ public class Amigo: AmigoConfigured{
 
         // ensure the throughModel is registered on both
         // sides of the relationship
-        m2mThroughModels.map{ (value: ManyToMany) -> Void in
-            m2mHash[value]?.map{ (each: ManyToMany) -> Void in
+        m2mThroughModels.forEach{ (value: ManyToMany) -> Void in
+            m2mHash[value]?.forEach{ (each: ManyToMany) -> Void in
                 each.throughModel = value.throughModel
                 each.through = value.through
             }
         }
 
         // use the set to omit duplicates
-        Set(m2m).map{ (value: ManyToMany) -> Void in
+        Set(m2m).forEach{ (value: ManyToMany) -> Void in
             let left = "\(value.left.label)_\(value.left.primaryKey!.label)"
             let right = "\(value.right.label)_\(value.right.primaryKey!.label)"
 
@@ -160,7 +160,7 @@ public class Amigo: AmigoConfigured{
 
             let table = Table(value.tableName, metadata: ORMModel.metadata, items: columns)
 
-            m2mHash[value]?.map{ (value: ManyToMany) -> Void in
+            m2mHash[value]?.forEach{ (value: ManyToMany) -> Void in
                 value.associationTable = table
             }
         }

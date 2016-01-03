@@ -24,7 +24,7 @@ public protocol FromClause: Hashable, CustomStringConvertible{
 extension Table {
     public func join(table: Table) -> Join{
 
-        let joins = self.columns.values.array
+        let joins = Array(self.columns.values)
             .filter{ $0.foreignKey?.relatedColumn == table.primaryKey }
             .map{ column -> Join in
                 let fk = column.foreignKey!
@@ -136,7 +136,7 @@ public class Select: FromClause, Filterable{
         let columns = tables.map{$0.sortedColumns}.flatMap{$0}
         self.init(columns)
 
-        tables.map(appendFrom)
+        tables.forEach(appendFrom)
     }
 
     public convenience init(_ columns: Column...){
@@ -177,7 +177,7 @@ public class Select: FromClause, Filterable{
     }
 
     public func selectFrom<T: FromClause>(from: T...) -> Select{
-        from.map(appendFrom)
+        from.forEach(appendFrom)
         return self
     }
 
@@ -187,7 +187,7 @@ public class Select: FromClause, Filterable{
 //    }
 
     public func selectFrom<T: FromClause>(from: [T]) -> Select{
-        from.map(appendFrom)
+        from.forEach(appendFrom)
         return self
     }
 
@@ -206,13 +206,13 @@ public class Select: FromClause, Filterable{
     }
 
     public func orderBy(value: [OrderBy]) -> Select{
-        _orderBy.extend(value)
+        _orderBy.appendContentsOf(value)
         return self
     }
 
     public var description: String{
         let names = columns.map{"\($0.table!.label).\($0.label)"}
-        let out = " ".join(names)
+        let out = names.joinWithSeparator(" ")
         return "<Select: \(out)>"
     }
 }

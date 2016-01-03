@@ -26,7 +26,7 @@ extension SQLiteEngine{
         }
 
         if select.from.count > 1{
-            model.foreignKeys.map{ (key, value)-> () in
+            model.foreignKeys.forEach{ (key, value)-> () in
                 let ormModel = models[value.foreignKey!.relatedTable.label]!
                 objectMap[ormModel] = key
             }

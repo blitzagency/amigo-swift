@@ -18,7 +18,7 @@ public class EntityDescriptionMapper: AmigoEntityDescriptionMapper{
         let type = entity.managedObjectClassName
         var items: [MetaItem]
 
-        items = entity.propertiesByName.values.array.map(mapColumn)
+        items = Array(entity.propertiesByName.values).map(mapColumn)
             .filter{ $0 != nil }
             .map{ $0! }
 

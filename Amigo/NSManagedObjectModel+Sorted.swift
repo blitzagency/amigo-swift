@@ -58,7 +58,7 @@ extension NSManagedObjectModel{
 
             for key in graph.keys {
                 let arr = graph[key]
-                var dl = arr!.filter{ $0 == node}
+                let dl = arr!.filter{ $0 == node}
                 if dl.count > 0 {
                     graph[key] = graph[key]?.filter({$0 != node})
                     if graph[key]?.count == 0 {

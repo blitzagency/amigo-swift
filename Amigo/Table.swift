@@ -66,8 +66,8 @@ public class Table: SchemaItem, FromClause{
             }
         }
 
-        items.filter{$0 is Column}.map{addColumn($0 as! Column)}
-        items.filter{$0 is Index}.map{addIndex($0 as! Index)}
+        items.filter{$0 is Column}.forEach{addColumn($0 as! Column)}
+        items.filter{$0 is Index}.forEach{addIndex($0 as! Index)}
 
         metadata.tables[label] = self
         metadata._sortedTables.append(self)

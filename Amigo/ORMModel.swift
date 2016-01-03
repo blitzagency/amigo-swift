@@ -40,14 +40,14 @@ public class ORMModel: Hashable{
                        .split{ $0 == "." }
                        .map{ String($0).lowercaseString }
 
-        let tableName = "_".join(nameParts)
+        let tableName = nameParts.joinWithSeparator("_")
         var tmpForeignKeys = [String:Column]()
         var tmpColumns = [Column]()
         var tmpPrimaryKey: Column!
         var tmpRelationships = [String: Relationship]()
 
 
-        relationshipList.map{ (each: Relationship) -> Void in
+        relationshipList.forEach{ (each: Relationship) -> Void in
             if let m2m = each as? ManyToMany, let partial = m2m.partial{
                 partial(type: qualifiedType)
             }
@@ -61,9 +61,9 @@ public class ORMModel: Hashable{
         label = nameParts[1]
         table = Table(tableName, metadata: ORMModel.metadata, items: schemaItems)
 
-        relationshipList.map{tmpRelationships[$0.label] = $0}
+        relationshipList.forEach{tmpRelationships[$0.label] = $0}
 
-        table.sortedColumns.map{ value -> () in
+        table.sortedColumns.forEach{ value -> () in
             if value.foreignKey != nil{
                 // foreign keys will have column names like:
                 // `foo_id`, but the relationship will be something
