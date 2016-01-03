@@ -233,19 +233,19 @@ public struct SQLiteCompiler: Compiler{
         var sql = [String]()
 
         switch context.predicate{
-        case _ as NSComparisonPredicate:
+        case is NSComparisonPredicate:
             let (str, args) = compileComparisonPredicate(context)
             sql.append(str)
             params = params + args.filter{ $0 != nil }.map{$0!}
 
-        case _ as NSCompoundPredicate:
+        case is NSCompoundPredicate:
             let (str, args) = compileCompoundPredicate(context)
             sql.append(str)
             params = params + args.filter{ $0 != nil }.map{$0!}
         default:()
         }
 
-        return (" ".join(sql), params)
+        return (sql.joinWithSeparator(" "), params)
     }
 
     public func compile(context: ExpressionContext) -> (AnyObject, AnyObject?){
@@ -290,7 +290,6 @@ public struct SQLiteCompiler: Compiler{
     public func compileComparisonPredicate(context: PredicateContext) -> (String, [AnyObject?]){
 
         let (left, right) = ExpressionContext.fromComparisionContext(context)
-
         //  .Some, .Optional
         let (a1, a2) = compile(left)
         let (b1, b2) = compile(right)
