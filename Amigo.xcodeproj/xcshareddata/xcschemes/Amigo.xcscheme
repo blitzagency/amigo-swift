@@ -37,6 +37,11 @@
                BlueprintName = "AmigoTests"
                ReferencedContainer = "container:Amigo.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AmigoQuerySetTests/testManyToManyThroughModelAddRejected()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>
