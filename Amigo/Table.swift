@@ -53,7 +53,7 @@ public class Table: SchemaItem, FromClause{
         let addColumn = { (value: Column) -> () in
 
             value._table = self
-            self.columns[value.label] = value
+            self.columns[value.label.lowercaseString] = value
             self._sortedColumns.append(value)
 
             if value.primaryKey{
