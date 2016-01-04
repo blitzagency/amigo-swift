@@ -29,6 +29,8 @@
 		237BC1131B6EC8C500F07892 /* typeToTableName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237BC1121B6EC8C500F07892 /* typeToTableName.swift */; };
 		238395E71C39BA2E00D5241F /* FMDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238395E61C39BA2E00D5241F /* FMDB.framework */; };
 		238395E81C39BEA800D5241F /* FMDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238395E61C39BA2E00D5241F /* FMDB.framework */; };
+		238395EB1C39F77100D5241F /* SpecializedColumnTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238395EA1C39F77100D5241F /* SpecializedColumnTests.swift */; };
+		238395ED1C3A29E300D5241F /* Fields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238395EC1C3A29E300D5241F /* Fields.swift */; };
 		23A5D0751B62E7C000915F24 /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5D0741B62E7C000915F24 /* Relationship.swift */; };
 		23B43AEF1B4AAA0000F90DFD /* MetaTableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B43AE61B49DA3400F90DFD /* MetaTableTests.swift */; };
 		23B43AF01B4B037100F90DFD /* Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3CFC11B46CEF200D8AD4C /* Table.swift */; };
@@ -110,6 +112,8 @@
 		237BC1061B6C22A200F07892 /* ModelMappingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelMappingTests.swift; sourceTree = "<group>"; };
 		237BC1121B6EC8C500F07892 /* typeToTableName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = typeToTableName.swift; sourceTree = "<group>"; };
 		238395E61C39BA2E00D5241F /* FMDB.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FMDB.framework; path = Carthage/Build/iOS/FMDB.framework; sourceTree = "<group>"; };
+		238395EA1C39F77100D5241F /* SpecializedColumnTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecializedColumnTests.swift; sourceTree = "<group>"; };
+		238395EC1C3A29E300D5241F /* Fields.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fields.swift; sourceTree = "<group>"; };
 		23A5D0741B62E7C000915F24 /* Relationship.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
 		23B43AE01B47489600F90DFD /* SQLiteEngineTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteEngineTests.swift; sourceTree = "<group>"; };
 		23B43AE61B49DA3400F90DFD /* MetaTableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetaTableTests.swift; sourceTree = "<group>"; };
@@ -285,6 +289,7 @@
 				23B43AF21B4B16B700F90DFD /* MetaColumnTests.swift */,
 				23B8F27E1B41978C00153865 /* Info.plist */,
 				23CCC2161B67A74200BF64A6 /* PerfTests.swift */,
+				238395EA1C39F77100D5241F /* SpecializedColumnTests.swift */,
 			);
 			path = AmigoTests;
 			sourceTree = "<group>";
@@ -333,6 +338,7 @@
 				23B43B081B4C16F800F90DFD /* SchemaItem.swift */,
 				23F3CFC11B46CEF200D8AD4C /* Table.swift */,
 				23F3CFC31B46CEFB00D8AD4C /* Column.swift */,
+				238395EC1C3A29E300D5241F /* Fields.swift */,
 				23A5D0741B62E7C000915F24 /* Relationship.swift */,
 				23B43B061B4C13D200F90DFD /* Index.swift */,
 				23F3CFC51B46CF4500D8AD4C /* MetaModel.swift */,
@@ -488,6 +494,7 @@
 				23F3CFC81B46E15E00D8AD4C /* ForeignKey.swift in Sources */,
 				233118A01B600DF100943976 /* ThreadLocalEngineFactory.swift in Sources */,
 				23B43B031B4C06AE00F90DFD /* Compiler.swift in Sources */,
+				238395ED1C3A29E300D5241F /* Fields.swift in Sources */,
 				23B43AF41B4B187000F90DFD /* Engine.swift in Sources */,
 				23C754A91B5C499F00584D1E /* SQLiteEngine+Transactions.swift in Sources */,
 				23B43AFD1B4BFC1200F90DFD /* SQLiteCompiler.swift in Sources */,
@@ -518,6 +525,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				238395EB1C39F77100D5241F /* SpecializedColumnTests.swift in Sources */,
 				237BC1071B6C22A200F07892 /* ModelMappingTests.swift in Sources */,
 				23474D031B52FC3F004D05BE /* AmigoTests.swift in Sources */,
 				23B43B0D1B4C77E400F90DFD /* SelectTests.swift in Sources */,
