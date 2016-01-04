@@ -280,8 +280,8 @@ We can then query the One To Many Relationship this way:
 
     var results = session
         .query(People)          // We want the People objects
-        .using(d1)              // from (using) the d1 (Dog) object
-        .relationship("people") // by following the d1 model's "people" realationship
+        .using(d1)              // by using the d1 (Dog) object
+        .relationship("people") // and following the d1 model's "people" relationship
         .all()
 
 .. _many-to-many:
@@ -354,8 +354,8 @@ Now, lets manually map them and create the relationship:
 
     var results = session
         .query(Child)             // We want the Child objects
-        .using(p1)                // from (using) the p1 (Parent) object
-        .relationship("children") // by following the p1 model's "children" realationship
+        .using(p1)                // by using the p1 (Parent) object
+        .relationship("children") // and following the p1 model's "children" relationship
         .all()
 
     print(results.count)

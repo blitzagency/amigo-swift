@@ -156,16 +156,17 @@ One-To-Many Query
 
 :code:`relationship`
 
-See :ref:`one-to-many` for more.
+See :ref:`one-to-many` for the full example.
 
 .. code-block:: swift
 
     let session = amigo.session
     var results = session
-        .query(People)
-        .using(d1)
-        .relationship("people")
+        .query(People)          // We want the People objects
+        .using(d1)              // by using the d1 (Dog) object
+        .relationship("people") // and following the d1 model's "people" relationship
         .all()
+
 
 
 Many-To-Many Query
@@ -173,14 +174,13 @@ Many-To-Many Query
 
 :code:`relationship`
 
-See :ref:`many-to-many` for more.
+See :ref:`many-to-many` for the full example.
 
 .. code-block:: swift
 
     let session = amigo.session
     var results = session
-        .query(Child)
-        .using(p1)
-        .relationship("children")
+        .query(Child)             // We want the Child objects
+        .using(p1)                // by using the p1 (Parent) object
+        .relationship("children") // and following the d1 model's "children" relationship
         .all()
-
