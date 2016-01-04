@@ -173,7 +173,26 @@ public class AmigoSession: AmigoConfigured{
     public func addModel<T: AmigoModel>(obj: T){
         let type = obj.dynamicType.description()
         let model = typeIndex[type]!
-        if obj.valueForKey(model.primaryKey.label) == nil{
+
+        var isInsert = false
+        let key = obj.valueForKey(model.primaryKey.label)
+
+        switch model.primaryKey.type{
+        case .Integer16AttributeType: fallthrough
+        case .Integer32AttributeType: fallthrough
+        case .Integer64AttributeType:
+            if key == nil{
+                isInsert = true
+            } else if let key = key as? Int where key == 0 {
+                isInsert = true
+            }
+        default:
+            if key == nil{
+                isInsert = true
+            }
+        }
+
+        if isInsert {
             insert(obj, model: model)
         } else {
             update(obj, model: model)
@@ -216,16 +235,17 @@ public class AmigoSession: AmigoConfigured{
         var automaticPrimaryKey = false
         var params = [AnyObject]()
 
-        for each in model.table.sortedColumns{
+
+        model.table.sortedColumns.forEach{
             let value: AnyObject?
 
-            if each.primaryKey && each.type == .Integer64AttributeType{
+            if $0.primaryKey && $0.type == .Integer64AttributeType{
                 automaticPrimaryKey = true
-                continue
+                return
             }
 
-            if let column = each.foreignKey{
-                let parts = each.label.unicodeScalars.split{ $0 == "_"}.map(String.init)
+            if let column = $0.foreignKey{
+                let parts = $0.label.unicodeScalars.split{ $0 == "_"}.map(String.init)
 
                 if let target = obj.valueForKey(parts[0]) as? AmigoModel{
                     let fkModel = config.tableIndex[column.relatedColumn.table!.label]!
@@ -240,7 +260,7 @@ public class AmigoSession: AmigoConfigured{
                     value = NSNull()
                 }
             } else {
-                if let x = obj.valueForKey(each.label){
+                if let x = $0.serialize(obj.valueForKey($0.label)){
                     value = x
                 } else {
                     value = NSNull()
@@ -293,7 +313,7 @@ public class AmigoSession: AmigoConfigured{
         let value = obj.valueForKey(id)!
         var update = model.table.update()
         let sql: String
-        let predicate = NSPredicate(format: "\(id) = \(value)")
+        let predicate = NSPredicate(format: "\(id) = '\(value)'")
         var params = [AnyObject]()
 
         for each in model.table.sortedColumns{
