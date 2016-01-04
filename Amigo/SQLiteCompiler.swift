@@ -38,6 +38,12 @@ public struct ExpressionContext{
     }
 }
 
+public struct ExpressionMeta{
+    let label: String
+    let value: AnyObject?
+    let column: Column?
+}
+
 public struct SQLiteCompiler: Compiler{
     public let typeCompiler = SQLiteTypeCompiler()
 
@@ -236,40 +242,41 @@ public struct SQLiteCompiler: Compiler{
         case is NSComparisonPredicate:
             let (str, args) = compileComparisonPredicate(context)
             sql.append(str)
-            params = params + args.filter{ $0 != nil }.map{$0!}
+            params = params + args.flatMap{$0}
 
         case is NSCompoundPredicate:
             let (str, args) = compileCompoundPredicate(context)
             sql.append(str)
-            params = params + args.filter{ $0 != nil }.map{$0!}
+            params = params + args.flatMap{$0}
         default:()
         }
 
         return (sql.joinWithSeparator(" "), params)
     }
 
-    public func compile(context: ExpressionContext) -> (AnyObject, AnyObject?){
+    //public func compile(context: ExpressionContext) -> (AnyObject, AnyObject?){
+    public func compile(context: ExpressionContext) -> ExpressionMeta{
         let expression = context.expression
-        switch expression.expressionType{
 
+        switch expression.expressionType{
         case .ConstantValueExpressionType:
-            return ("?", expression.constantValue)
+            return ExpressionMeta(label: "?", value: expression.constantValue, column: nil )
         case .KeyPathExpressionType:
 
             let parts = expression.keyPath.unicodeScalars.split{$0 == "."}.map(String.init).map{$0.lowercaseString}
-            let column: String
+            let column: Column
 
             if parts.count == 1{
-                column = context.table.columns[parts[0]]!.qualifiedLabel!
+                column = context.table.columns[parts[0]]!
             } else if parts.count == 2{
                 let key = parts[0] + "_id"
-                column = context.table.columns[key]!.foreignKey!.relatedTable.columns[parts[1]]!.qualifiedLabel!
+                column = context.table.columns[key]!.foreignKey!.relatedTable.columns[parts[1]]!
             } else { // fully qualified (count = 3) namespace | table | column
                 let key = parts[1] + "_id"
-                column = context.table.columns[key]!.foreignKey!.relatedColumn.qualifiedLabel!
+                column = context.table.columns[key]!.foreignKey!.relatedColumn
             }
 
-            return (column, nil)
+            return ExpressionMeta(label: column.qualifiedLabel!, value: nil, column: column)
 
         case .EvaluatedObjectExpressionType: fallthrough
         case .VariableExpressionType: fallthrough
@@ -280,22 +287,22 @@ public struct SQLiteCompiler: Compiler{
         case .SubqueryExpressionType: fallthrough
         case .AggregateExpressionType: fallthrough
         case .AnyKeyExpressionType: fallthrough
-        case .BlockExpressionType:
-            return ("", nil)
+        case .BlockExpressionType: fallthrough
         default:
-            return ("", nil)
+            return ExpressionMeta(label: "", value: nil, column: nil)
         }
+
     }
 
     public func compileComparisonPredicate(context: PredicateContext) -> (String, [AnyObject?]){
 
         let (left, right) = ExpressionContext.fromComparisionContext(context)
-        //  .Some, .Optional
-        let (a1, a2) = compile(left)
-        let (b1, b2) = compile(right)
-        let params = [a2, b2]
 
-        let sql = compile(context.comparisionPredicate.predicateOperatorType, left: a1, right: b1)
+        let metaLeft = compile(left)
+        let metaRight = compile(right)
+        let params = [metaLeft.column?.serialize(metaRight.value)]
+
+        let sql = compile(context.comparisionPredicate.predicateOperatorType, left: metaLeft.label, right: metaRight.label)
 
         return (sql, params)
     }
