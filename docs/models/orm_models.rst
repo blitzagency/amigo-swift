@@ -138,7 +138,7 @@ Lets take a look at how using these might look:
 
     // now initialize Amigo
     let engine = SQLiteEngineFactory(":memory:", echo: true)
-    let amigo = Amigo([uuid], factory: engine)
+    let amigo = Amigo([myModel], factory: engine)
     amigo.createAll()
 
     let objId = NSUUID().UUIDString
