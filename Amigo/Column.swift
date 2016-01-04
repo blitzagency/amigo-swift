@@ -62,29 +62,31 @@ public class Column: SchemaItem, CustomStringConvertible, Hashable{
         let attrType: NSAttributeType
 
         switch type{
-        case let t where t == NSString.self:
+        case is NSString.Type:
             attrType = .StringAttributeType
-        case let t where t == String.self:
+        case is String.Type:
             attrType = .StringAttributeType
-        case let t where t == Int16.self:
+        case is Int16.Type:
             attrType = .Integer16AttributeType
-        case let t where t == Int32.self:
+        case is Int32.Type:
             attrType = .Integer32AttributeType
-        case let t where t == Int64.self:
+        case is Int64.Type:
             attrType = .Integer64AttributeType
-        case let t where t == Int.self:
+        case is Int.Type:
             attrType = .Integer64AttributeType
-        case let t where t == NSDate.self:
+        case is NSDate.Type:
             attrType = .DateAttributeType
-        case let t where t == NSData.self:
+        case is [UInt8].Type:
             attrType = .BinaryDataAttributeType
-        case let t where t == NSDecimalNumber.self:
+        case is NSData.Type:
+            attrType = .BinaryDataAttributeType
+        case is NSDecimalNumber.Type:
             attrType = .DecimalAttributeType
-        case let t where t == Double.self:
+        case is Double.Type:
             attrType = .DoubleAttributeType
-        case let t where t == Float.self:
+        case is Float.Type:
             attrType = .FloatAttributeType
-        case let t where t == Bool.self:
+        case is Bool.Type:
             attrType = .BooleanAttributeType
         default:
             attrType = .UndefinedAttributeType
