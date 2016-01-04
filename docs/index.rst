@@ -1,7 +1,7 @@
 Welcome to Amigo!
 =================================
 
-A Rough Draft of a SQLite ORM for Swift 2.1+ backed by `FMDB <https://github.com/ccgus/fmdb>`_
+A SQLite ORM for Swift 2.1+ backed by `FMDB <https://github.com/ccgus/fmdb>`_
 
 
 But What About CoreData?
