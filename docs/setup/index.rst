@@ -59,8 +59,8 @@ is done in one place:
     we recommend forcing the :code:`amigo` object to be created
     at app launch by just referencing :code:`amigo` at the top of
     your :code:`didFinishLaunching` method if you don't
-    already use the :code:`amigo` object something on app launch. This
-    style and description was taken from [XCGLogger]_
+    already use the :code:`amigo` object for something on app launch.
+    This style and description was taken directly from [XCGLogger]_
 
 
 
