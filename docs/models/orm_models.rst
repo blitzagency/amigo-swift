@@ -361,6 +361,8 @@ Now, lets manually map them and create the relationship:
     print(results.count)
 
 
+.. _many-to-many-through-models:
+
 Extra Fields on Many To Many Relationships
 -------------------------------------------
 
@@ -485,9 +487,8 @@ Amigo handles the insert into the intermediate table for you.
 
     // querying the many-to-many however is the same.
     var results = session
-        .query(WorkoutMeta)
-        .using(w1)
-        .relationship("exercises")
-        .orderBy("position", ascending: true)
+        .query(WorkoutMeta)                    // We want the WorkoutMeta objects
+        .using(w1)                             // by using the w1 (Workout) object
+        .relationship("exercises")             // and following the w1 model's "exercises" relationship
+        .orderBy("position", ascending: true)  // order the results by WorkoutMeta.position ascending
         .all()
-
