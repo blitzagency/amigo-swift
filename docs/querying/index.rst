@@ -194,6 +194,7 @@ Many-To-Many With Through Models Query
 See :ref:`many-to-many-through-models` for the full example.
 
 .. code-block:: swift
+
     let session = amigo.session
 
     var results = session
