@@ -184,3 +184,22 @@ See :ref:`many-to-many` for the full example.
         .using(p1)                // by using the p1 (Parent) object
         .relationship("children") // and following the d1 model's "children" relationship
         .all()
+
+
+Many-To-Many With Through Models Query
+---------------------------------------
+
+:code:`relationship`
+
+See :ref:`many-to-many-through-models` for the full example.
+
+.. code-block:: swift
+    let session = amigo.session
+
+    var results = session
+        .query(WorkoutMeta)                   // We want the WorkoutMeta objects
+        .using(w1)                            // by using the w1 (Workout) object
+        .relationship("exercises")            // and following the w1 model's "exercises" relationship
+        .orderBy("position", ascending: true) // order the results by WorkoutMeta.position ascending
+        .all()
+
