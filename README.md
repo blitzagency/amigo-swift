@@ -1,5 +1,5 @@
 # Amigo
-A SQLite ORM for Swift 2.1+ backed by FMDB
+A SQLite ORM for Swift 2.1+ powered by FMDB
 
 Docs in progress are here:
 
