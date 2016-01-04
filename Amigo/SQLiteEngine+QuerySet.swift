@@ -42,9 +42,9 @@ extension SQLiteEngine{
 
                 objs[currentModel] = mapper.instanceFromString(model.type)
 
-                for x in select.columns{
+                select.columns.forEach{
                     var active: AmigoModel!
-                    currentModel = models[x.table!.label]!
+                    currentModel = models[$0.table!.label]!
 
                     if let obj = objs[currentModel]{
                         active = obj
@@ -56,8 +56,8 @@ extension SQLiteEngine{
                         root.setValue(active, forKey: key)
                     }
 
-                    let value = results.objectForColumnName(x.qualifiedLabel!)
-                    active.setValue(value, forKey: x.label)
+                    let value = results.objectForColumnName($0.qualifiedLabel!)
+                    active.setValue($0.deserialize(value), forKey: $0.label)
                 }
 
                 rows.append(objs[model]! as! T)
