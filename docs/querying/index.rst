@@ -66,6 +66,36 @@ Filter objects
     then passed to FMDB for escaping/replacement.
 
 
+Limit objects
+----------------------------------
+
+:code:`limit`
+
+.. code-block:: swift
+
+    let session = amigo.session
+    let dogs: [Dog] = session
+        .query(Dog)
+        .limit(10)
+        .all()
+
+
+
+Offset objects
+----------------------------------
+
+:code:`offset`
+
+.. code-block:: swift
+
+    let session = amigo.session
+    let dogs: [Dog] = session
+        .query(Dog)
+        .limit(10)
+        .offset(5)
+        .all()
+
+
 Full foreign key in one query (aka JOIN)
 ----------------------------------------
 
