@@ -31,7 +31,13 @@ amigo.createAll()
 ```
 
 Yup, Amigo can turn NSEntityDescriptions along with their relationships
-into your tables for you. There are only a couple things to know.
+into your tables for you.
+
+Read more about it here:
+
+http://amigo.readthedocs.org/en/latest/models/mom.html
+
+There are only a couple things to know.
 
 1. Unlike CoreData, you need to specify your primary key field. This could
 totally be automated for you, we havent decided if we like that or not yet.
@@ -45,11 +51,15 @@ is a subclass of `AmigoModel`
 You do not have to use a `ManagedObjectModel` either you can just define your
 mappings yourself as follows:
 
+Read more about it here:
+
+http://amigo.readthedocs.org/en/latest/models/orm_models.html
+
 ```swift
 import Amigo
 
 class Dog: AmigoModel{
-    dynamic var id: NSNumber!
+    dynamic var id: Int = 0
     dynamic var label: String!
 }
 
@@ -78,6 +88,11 @@ More on that later.
 ## Querying
 
 Using our mapping above, lets do some simple querying:
+
+You can also read more about this here:
+
+http://amigo.readthedocs.org/en/latest/querying/index.html
+
 
 ```swift
 import Amigo
