@@ -35,6 +35,8 @@ instances. Lets take a look at how we do that.
     )
 
     // now initialize Amigo
+    // specifying 'echo: true' will have amigo print out
+    // all of the SQL commands it's generating.
     let engine = SQLiteEngineFactory(":memory:", echo: true)
     amigo = Amigo([dog], factory: engine)
     amigo.createAll()
@@ -193,6 +195,8 @@ In code it would look like this:
         Column("dog", type: ForeignKey(dog))
     )
 
+    // specifying 'echo: true' will have amigo print out
+    // all of the SQL commands it's generating.
     let engine = SQLiteEngineFactory(":memory:", echo: true)
     amigo = Amigo([dog, person], factory: engine)
     amigo.createAll()

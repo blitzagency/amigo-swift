@@ -35,6 +35,8 @@ instances. Lets take a look at how we do that.
     )
 
     // now initialize Amigo
+    // specifying 'echo: true' will have amigo print out
+    // all of the SQL commands it's generating.
     let engine = SQLiteEngineFactory(":memory:", echo: true)
     amigo = Amigo([dog], factory: engine)
     amigo.createAll()
@@ -137,6 +139,8 @@ Lets take a look at how using these might look:
     )
 
     // now initialize Amigo
+    // specifying 'echo: true' will have amigo print out
+    // all of the SQL commands it's generating.
     let engine = SQLiteEngineFactory(":memory:", echo: true)
     let amigo = Amigo([myModel], factory: engine)
     amigo.createAll()
@@ -254,6 +258,8 @@ In code it would look like this:
         Column("dog", type: ForeignKey(dog))
     )
 
+    // specifying 'echo: true' will have amigo print out
+    // all of the SQL commands it's generating.
     let engine = SQLiteEngineFactory(":memory:", echo: true)
     amigo = Amigo([dog, person], factory: engine)
     amigo.createAll()
@@ -332,6 +338,8 @@ Now, lets manually map them and create the relationship:
         Column("label", type: String.self),
     )
 
+    // specifying 'echo: true' will have amigo print out
+    // all of the SQL commands it's generating.
     let engine = SQLiteEngineFactory(":memory:", echo: true)
     amigo = Amigo([parent, child], factory: engine)
     amigo.createAll()

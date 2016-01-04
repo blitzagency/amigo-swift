@@ -25,6 +25,9 @@ import CoreData
 // the default value of false does nothing.
 
 let mom = NSManagedObjectModel(contentsOfURL: url)!
+
+// specifying 'echo: true' will have amigo print out
+// all of the SQL commands it's generating.
 let engine = SQLiteEngineFactory(":memory:", echo: true)
 amigo = Amigo(mom, factory: engine)
 amigo.createAll()
@@ -77,6 +80,8 @@ let dog = ORMModel(Dog.self,
 )
 
 // now initialize Amigo
+// specifying 'echo: true' will have amigo print out
+// all of the SQL commands it's generating.
 let engine = SQLiteEngineFactory(":memory:", echo: true)
 amigo = Amigo([dog], factory: engine)
 amigo.createAll()
@@ -107,6 +112,8 @@ let dog = ORMModel(Dog.self,
     Column("label", type: String.self)
 )
 
+// specifying 'echo: true' will have amigo print out
+// all of the SQL commands it's generating.
 let engine = SQLiteEngineFactory(":memory:", echo: true)
 amigo = Amigo([dog], factory: engine)
 amigo.createAll()

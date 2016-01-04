@@ -43,6 +43,8 @@ is done in one place:
         )
 
         // now initialize Amigo
+        // specifying 'echo: true' will have amigo print out
+        // all of the SQL commands it's generating.
         let engine = SQLiteEngineFactory(":memory:", echo: true)
         let amigo = Amigo([dog], factory: engine)
         amigo.createAll()

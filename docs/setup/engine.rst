@@ -19,6 +19,9 @@ up so we can create our schema:
     // the default value of false does nothing.
 
     let mom = NSManagedObjectModel(contentsOfURL: url)!
+
+    // specifying 'echo: true' will have amigo print out
+    // all of the SQL commands it's generating.
     let engine = SQLiteEngineFactory(":memory:", echo: true)
     amigo = Amigo(mom, factory: engine)
     amigo.createAll()

@@ -117,6 +117,8 @@ See :ref:`foreign-key` for more.
         Column("dog", type: ForeignKey(dog))
     )
 
+    // specifying 'echo: true' will have amigo print out
+    // all of the SQL commands it's generating.
     let engine = SQLiteEngineFactory(":memory:", echo: true)
     amigo = Amigo([dog, person], factory: engine)
     amigo.createAll()
@@ -158,6 +160,8 @@ Filter and Order By related fields
         Column("dog", type: ForeignKey(dog))
     )
 
+    // specifying 'echo: true' will have amigo print out
+    // all of the SQL commands it's generating.
     let engine = SQLiteEngineFactory(":memory:", echo: true)
     amigo = Amigo([dog, person], factory: engine)
     amigo.createAll()
