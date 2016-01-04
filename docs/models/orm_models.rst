@@ -97,6 +97,68 @@ See the initializers in:
 https://github.com/blitzagency/amigo-swift/blob/master/Amigo/Column.swift
 
 
+Column Shortcuts (Fields)
+--------------------------
+
+Amigo also provides a series pre-baked column types.
+
+https://github.com/blitzagency/amigo-swift/blob/master/Amigo/Fields.swift
+
+They take the same arguments as a :code:`Column`, but the type can be omitted.
+
+.. code-block:: swift
+
+    UUIDField
+    CharField
+    BooleanField
+    IntegerField
+    FloatField
+    DoubleField
+    BinaryField
+    DateTimeField // needs some work
+
+.. note::
+
+    The UUIDField, in SQLite, will store your data as a 16 byte BLOB
+    but it on the model itself it will be realized as a :code:`String`.
+
+Lets take a look at how using these might look:
+
+.. code-block:: swift
+
+    class MyModel: AmigoModel{
+        dynamic var id: Int = 0
+        dynamic var objId: String!
+    }
+
+    let myModel = ORMModel(MyModel.self,
+        IntegerField("id", primaryKey: true),
+        UUIDField("objId", indexed: true, unique: true)
+    )
+
+    // now initialize Amigo
+    let engine = SQLiteEngineFactory(":memory:", echo: true)
+    let amigo = Amigo([uuid], factory: engine)
+    amigo.createAll()
+
+    let objId = NSUUID().UUIDString
+    let obj = MyModel()
+    obj.objId = objId
+
+    let session = amigo.session
+    session.add(obj)
+
+    let results = session
+        .query(MyModel)
+        .filter("objId = '\(objId)'")
+        .all()
+
+Remember above how we said that the :code:`UUIDField` stores it's data
+as a BLOB. The above filter does the right thing, it will convert the
+privided string when filtering on the :code:`UUIDField` to it's data
+representation.
+
+
 One additional type exists for Column initialization and that's :code:`Amigo.ForeignKey`
 
 .. _foreign-key:
