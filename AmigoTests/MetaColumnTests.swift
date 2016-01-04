@@ -53,6 +53,11 @@ class MetaColumnTests: XCTestCase {
         XCTAssertTrue(column.type == NSAttributeType.FloatAttributeType)
     }
 
+    func testUInt8Buffer() {
+        let column = Column("test", type: [UInt8].self)
+        XCTAssertTrue(column.type == NSAttributeType.BinaryDataAttributeType)
+    }
+
     func testNSData() {
         let column = Column("test", type: NSData.self)
         XCTAssertTrue(column.type == NSAttributeType.BinaryDataAttributeType)
