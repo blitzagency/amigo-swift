@@ -27,6 +27,14 @@ public class Column: SchemaItem, CustomStringConvertible, Hashable{
         return description.hashValue
     }
 
+    public func serialize(value: AnyObject?) -> AnyObject? {
+        return value
+    }
+
+    public func deserialize(value: AnyObject?) -> AnyObject? {
+        return value
+    }
+
     var _foreignKey: ForeignKey?
     public var foreignKey: ForeignKey? {
         get{
