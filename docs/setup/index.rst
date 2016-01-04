@@ -27,6 +27,7 @@ Initialize Amigo into a global variable so all the initialization
 is done in one place:
 
  .. code-block:: swift
+
     import Amigo
 
 
@@ -48,6 +49,7 @@ is done in one place:
 
         return amigo
     }()
+
 
 .. note::
 
