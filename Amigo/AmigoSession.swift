@@ -234,7 +234,7 @@ public class AmigoSession: AmigoConfigured{
         let sql = engine.compiler.compile(insert)
         var automaticPrimaryKey = false
         var params = [AnyObject]()
-
+        var defaults = [String: AnyObject]()
 
         model.table.sortedColumns.forEach{
             let value: AnyObject?
@@ -250,18 +250,26 @@ public class AmigoSession: AmigoConfigured{
                 if let target = obj.valueForKey(parts[0]) as? AmigoModel{
                     let fkModel = config.tableIndex[column.relatedColumn.table!.label]!
 
-                    if let id = target.valueForKey(fkModel.primaryKey.label){
+                    if let id = fkModel.primaryKey.modelValue(target) {
                         value = id
                     } else {
                         self.insert(target, model: fkModel)
-                        value = target.valueForKey(fkModel.primaryKey.label)!
+                        value = fkModel.primaryKey.modelValue(target)
                     }
                 } else {
                     value = NSNull()
                 }
             } else {
-                if let x = $0.serialize(obj.valueForKey($0.label)){
-                    value = x
+
+                let currentValue = $0.modelValue(obj)
+                let candidateValue = $0.valueOrDefault(currentValue)
+
+                if currentValue == nil && candidateValue != nil{
+                    defaults[$0.label] = candidateValue
+                }
+
+                if let serializedValue = $0.serialize(candidateValue){
+                    value = serializedValue
                 } else {
                     value = NSNull()
                 }
@@ -275,6 +283,12 @@ public class AmigoSession: AmigoConfigured{
         if automaticPrimaryKey && engine.fetchLastRowIdAfterInsert{
             let id = self.engine.lastrowid()
             obj.setValue(id, forKey: model.primaryKey.label)
+        }
+
+        // push any defaults back to the model only AFTER
+        // we have executed the query
+        defaults.forEach{ key, value in
+            obj.setValue(value, forKey: key)
         }
 
         if let relationship = model.throughModelRelationship{
