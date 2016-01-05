@@ -78,6 +78,24 @@ class MetaColumnTests: XCTestCase {
         XCTAssertTrue(column.type == NSAttributeType.DecimalAttributeType)
     }
 
+    func testDefaultValue() {
+        let column = Column("test", type: String.self){
+            return "ollie"
+        }
+
+        let value = column.serialize(nil) as! String
+        XCTAssert(value == "ollie")
+    }
+
+    func testDefaultValueSkip() {
+        let column = Column("test", type: String.self){
+            return "ollie"
+        }
+
+        let value = column.serialize("lucy") as! String
+        XCTAssert(value == "lucy")
+    }
+
     func testForeignKeyColumn() {
         let meta = MetaData()
         let t1 = Table("dogs", metadata: meta,

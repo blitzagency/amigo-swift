@@ -9,16 +9,29 @@
 import Foundation
 
 public class UUIDField: Column{
-    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false) {
-        self.init(label, type: .BinaryDataAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique)
+    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
+        self.init(label, type: .BinaryDataAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
     }
 
     public override func serialize(value: AnyObject?) -> AnyObject?{
-        guard let value = value as? String else {
+        let string: String
+
+        if let defaultValue = defaultValue where value == nil{
+            if let candidate = defaultValue() as? String{
+                string = candidate
+            } else {
+                return nil
+            }
+        } else if let candidate = value as? String{
+            string = candidate
+        } else {
             return nil
         }
 
-        let uuid = NSUUID(UUIDString: value)!
+        guard let uuid = NSUUID(UUIDString: string) else {
+            return nil
+        }
+
         var bytes = [UInt8](count: 16, repeatedValue: 0)
         uuid.getUUIDBytes(&bytes)
 
@@ -39,43 +52,43 @@ public class UUIDField: Column{
 }
 
 public class CharField: Column{
-    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false) {
-        self.init(label, type: .StringAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique)
+    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
+        self.init(label, type: .StringAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
     }
 }
 
 public class BooleanField: Column{
-    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false) {
-        self.init(label, type: .BooleanAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique)
+    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
+        self.init(label, type: .BooleanAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
     }
 }
 
 public class IntegerField: Column{
-    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false) {
-        self.init(label, type: .Integer64AttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique)
+    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
+        self.init(label, type: .Integer64AttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
     }
 }
 
 public class FloatField: Column{
-    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false) {
-        self.init(label, type: .FloatAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique)
+    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
+        self.init(label, type: .FloatAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
     }
 }
 
 public class DoubleField: Column{
-    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false) {
-        self.init(label, type: .DoubleAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique)
+    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
+        self.init(label, type: .DoubleAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
     }
 }
 
 public class BinaryField: Column{
-    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false) {
-        self.init(label, type: .BinaryDataAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique)
+    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
+        self.init(label, type: .BinaryDataAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
     }
 }
 
 public class DateTimeField: Column{
-    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false) {
-        self.init(label, type: .DateAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique)
+    public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
+        self.init(label, type: .DateAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
     }
 }

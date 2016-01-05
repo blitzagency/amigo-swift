@@ -15,6 +15,20 @@ class UUIDModel: AmigoModel{
     dynamic var objId: String!
 }
 
+class UUIDPKModel: AmigoModel{
+    dynamic var objId: String!
+}
+
+func uuidToBytes(value: String) -> NSData{
+    let uuid = NSUUID(UUIDString: value)!
+
+    var bytes = [UInt8](count: 16, repeatedValue: 0)
+    uuid.getUUIDBytes(&bytes)
+
+    return NSData(bytes: bytes, length: bytes.count)
+}
+
+
 
 class SpecializedColumnTests: XCTestCase {
 
@@ -25,9 +39,15 @@ class SpecializedColumnTests: XCTestCase {
             UUIDField("objId", indexed: true, unique: true)
         )
 
+        let uuidPk = ORMModel(UUIDPKModel.self,
+            UUIDField("objId", primaryKey: true){
+                return NSUUID().UUIDString
+            }
+        )
+
         // now initialize Amigo
         let engine = SQLiteEngineFactory(":memory:", echo: true)
-        let amigo = Amigo([uuid], factory: engine)
+        let amigo = Amigo([uuid, uuidPk], factory: engine)
         amigo.createAll()
         
         return amigo
@@ -41,6 +61,37 @@ class SpecializedColumnTests: XCTestCase {
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
+    }
+
+    func testUUIDDefaultValue() {
+        let field = UUIDField("objId", primaryKey: true){
+            return NSUUID().UUIDString
+        }
+
+        let value = field.serialize(nil)
+        XCTAssert(value != nil)
+    }
+
+    func testUUIDDefaultValueSkip() {
+        let objId = NSUUID().UUIDString
+
+        let field = UUIDField("objId", primaryKey: true){
+            return NSUUID().UUIDString
+        }
+
+        let value = field.serialize(objId) as? NSData
+        XCTAssert(value == uuidToBytes(objId))
+    }
+
+    func testUUIDMalformed() {
+        let objId = "ollie"
+
+        let field = UUIDField("objId", primaryKey: true){
+            return NSUUID().UUIDString
+        }
+
+        let value = field.serialize(objId)
+        XCTAssert(value == nil)
     }
 
     func testUUIDColumn() {
@@ -81,5 +132,27 @@ class SpecializedColumnTests: XCTestCase {
             XCTFail()
         }
         
+    }
+
+    func testUUIDAsPrimaryKey() {
+        let objId = NSUUID().UUIDString
+        let uuid = UUIDPKModel()
+        //uuid.objId = objId
+
+        let session = amigo.session
+
+        //session.add(uuid)
+
+//        let query = session
+//            .query(UUIDModel)
+//            .filter("objId = '\(objId)'")
+//
+//        if let results = query.all().first{
+//            XCTAssert(results.id == 1)
+//            XCTAssert(results.objId == objId)
+//        } else {
+//            XCTFail()
+//        }
+
     }
 }

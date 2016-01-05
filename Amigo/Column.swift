@@ -22,12 +22,17 @@ public class Column: SchemaItem, CustomStringConvertible, Hashable{
     public let indexed: Bool
     public let unique: Bool
     public var optional: Bool
+    public let defaultValue: (() -> AnyObject?)?
 
     public var hashValue: Int{
         return description.hashValue
     }
 
     public func serialize(value: AnyObject?) -> AnyObject? {
+        if let defaultValue = defaultValue where value == nil{
+            return defaultValue()
+        }
+
         return value
     }
 
@@ -57,16 +62,17 @@ public class Column: SchemaItem, CustomStringConvertible, Hashable{
         return _qualifiedLabel
     }
 
-    public init(_ label: String, type: NSAttributeType, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false){
+    public init(_ label: String, type: NSAttributeType, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil){
         self.label = label
         self.type = type
         self.primaryKey = primaryKey
         self.indexed = indexed
         self.optional = optional
         self.unique = unique
+        self.defaultValue = defaultValue
     }
 
-    public convenience init(_ label: String, type: Any.Type, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false){
+    public convenience init(_ label: String, type: Any.Type, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil){
         let attrType: NSAttributeType
 
         switch type{
@@ -100,11 +106,11 @@ public class Column: SchemaItem, CustomStringConvertible, Hashable{
             attrType = .UndefinedAttributeType
         }
 
-        self.init(label, type: attrType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique)
+        self.init(label, type: attrType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
 
     }
 
-    public convenience init(_ label: String, type: ForeignKey, primaryKey: Bool = false, indexed: Bool = true, optional: Bool = true, unique: Bool = false){
+    public convenience init(_ label: String, type: ForeignKey, primaryKey: Bool = false, indexed: Bool = true, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil){
         let columnLabel: String
 
         if let range = label.rangeOfString("_id", options:.BackwardsSearch){
@@ -118,7 +124,7 @@ public class Column: SchemaItem, CustomStringConvertible, Hashable{
         }
 
         let associatedType = type.relatedColumn.type
-        self.init(columnLabel, type: associatedType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique)
+        self.init(columnLabel, type: associatedType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
         _foreignKey = ForeignKey(type.relatedColumn, column: self)
     }
 

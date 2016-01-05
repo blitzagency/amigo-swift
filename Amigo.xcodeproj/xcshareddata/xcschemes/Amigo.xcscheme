@@ -65,6 +65,9 @@
                <Test
                   Identifier = "SQLiteCompilerTests/testCompoundPredicate()">
                </Test>
+               <Test
+                  Identifier = "SpecializedColumnTests/testUUIDAsPrimaryKey()">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
