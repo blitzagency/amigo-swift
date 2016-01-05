@@ -12,7 +12,7 @@ Drop this into your :code:`Cartfile`:
 
 ::
 
-    github "blitzagency/amigo-swift" ~> 0.2.0
+    github "blitzagency/amigo-swift" ~> 0.2.4
 
 Admittedly, we are probably not the best at the whole,
 *"How do you share an Xcode Project"* thing, so any recommendations
