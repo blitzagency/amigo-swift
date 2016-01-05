@@ -9,9 +9,9 @@
 import Foundation
 
 public struct SQLiteEngineFactory: EngineFactory{
-    let path: String
-    let echo: Bool
-    let engine: SQLiteEngine
+    public let path: String
+    public let echo: Bool
+    public let engine: SQLiteEngine
 
     public init(_ path: String, echo: Bool = false){
         self.path = path
