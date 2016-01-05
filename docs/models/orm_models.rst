@@ -72,6 +72,7 @@ Your avavilable options for `Column` types are as follows:
     Int
     NSDate
     NSData
+    [UInt8]
     NSDecimalNumber
     Double
     Float
