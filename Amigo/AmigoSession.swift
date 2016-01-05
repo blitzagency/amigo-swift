@@ -329,36 +329,46 @@ public class AmigoSession: AmigoConfigured{
         let sql: String
         let predicate = NSPredicate(format: "\(id) = '\(value)'")
         var params = [AnyObject]()
+        var defaults = [String: AnyObject]()
 
-        for each in model.table.sortedColumns{
+        model.table.sortedColumns.forEach{
             let value: AnyObject?
 
             // is this the automatic primaryKey column?
             // skip it for updates.
-            if each.primaryKey && each.type == .Integer64AttributeType{
-                continue
+            if $0.primaryKey && $0.type == .Integer64AttributeType{
+                return
             }
 
-            // this is a duplicated block of code from add() above.
-            // refactor this...
-            if let column = each.foreignKey{
-                let parts = each.label.unicodeScalars.split{ $0 == "_"}.map(String.init)
+            // TODO:
+            // this is a duplicated block of code from:
+            // func insert<T: AmigoModel>(obj: T, model: ORMModel) 
+            // above, refactor this...
+            if let column = $0.foreignKey{
+                let parts = $0.label.unicodeScalars.split{ $0 == "_"}.map(String.init)
 
                 if let target = obj.valueForKey(parts[0]) as? AmigoModel{
                     let fkModel = config.tableIndex[column.relatedColumn.table!.label]!
 
-                    if let id = target.valueForKey(fkModel.primaryKey.label){
+                    if let id = fkModel.primaryKey.modelValue(target) {
                         value = id
                     } else {
                         self.insert(target, model: fkModel)
-                        value = target.valueForKey(fkModel.primaryKey.label)!
+                        value = fkModel.primaryKey.modelValue(target)
                     }
                 } else {
                     value = NSNull()
                 }
             } else {
-                if let x = obj.valueForKey(each.label){
-                    value = x
+                let currentValue = $0.modelValue(obj)
+                let candidateValue = $0.valueOrDefault(currentValue)
+
+                if currentValue == nil && candidateValue != nil{
+                    defaults[$0.label] = candidateValue
+                }
+
+                if let serializedValue = $0.serialize(candidateValue){
+                    value = serializedValue
                 } else {
                     value = NSNull()
                 }
@@ -374,5 +384,11 @@ public class AmigoSession: AmigoConfigured{
         sql = engine.compiler.compile(update)
 
         engine.execute(sql, params: params)
+
+        // push any defaults back to the model only AFTER
+        // we have executed the query
+        defaults.forEach{ key, value in
+            obj.setValue(value, forKey: key)
+        }
     }
 }
