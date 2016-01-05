@@ -14,21 +14,9 @@ public class UUIDField: Column{
     }
 
     public override func serialize(value: AnyObject?) -> AnyObject?{
-        let string: String
 
-        if let defaultValue = defaultValue where value == nil{
-            if let candidate = defaultValue() as? String{
-                string = candidate
-            } else {
-                return nil
-            }
-        } else if let candidate = value as? String{
-            string = candidate
-        } else {
-            return nil
-        }
-
-        guard let uuid = NSUUID(UUIDString: string) else {
+        guard let string = value as? String,
+              let uuid = NSUUID(UUIDString: string) else {
             return nil
         }
 
@@ -38,6 +26,26 @@ public class UUIDField: Column{
         return NSData(bytes: bytes, length: bytes.count)
     }
 
+    /// Deserializes `UUID` Bytes back to their `String` representation
+    ///
+    /// - Attention:
+    ///
+    /// Each field is treated as an integer and has its value printed as a
+    /// zero-filled hexadecimal digit string with the most significant
+    /// digit first.  The hexadecimal values "a" through "f" are output as
+    /// lower case characters and are case insensitive on input.
+    ///
+    /// RFC 4122 specifies output as lower case characters
+    /// when NSUUID decodes the bytes back into the string it 
+    /// keeps them as upper case. We intentionally force
+    /// the values back to lower case to keep in line with the RFC
+    ///
+    /// - SeeAlso:
+    ///
+    ///  RFC 4122 (https://www.ietf.org/rfc/rfc4122.txt)
+    ///
+    ///  Declaration of syntactic structure
+    ///
     public override func deserialize(value: AnyObject?) -> AnyObject?{
         guard let value = value as? NSData else {
             return nil
@@ -46,7 +54,7 @@ public class UUIDField: Column{
         var bytes = [UInt8](count: 16, repeatedValue: 0)
         value.getBytes(&bytes, length: bytes.count)
 
-        let uuid = NSUUID(UUIDBytes: bytes).UUIDString
+        let uuid = NSUUID(UUIDBytes: bytes).UUIDString.lowercaseString
         return uuid
     }
 }
