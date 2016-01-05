@@ -54,6 +54,7 @@ Columns can be initialized with the following options (default values presented)
     indexed: Bool = false
     optional: Bool = true
     unique: Bool = false
+    defaultValue: (() -> AnyObject?)? = nil
 
 
 Column Types
