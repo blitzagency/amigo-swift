@@ -73,7 +73,7 @@ public class QuerySet<T: AmigoModel>: AmigoConfigured{
     }
 
     public func get(primaryKey: AnyObject) -> T?{
-        self.filter("\(model.primaryKey.label) = \(primaryKey)")
+        self.filter("\(model.primaryKey.label) = '\(primaryKey)'")
         return all().first
     }
 
