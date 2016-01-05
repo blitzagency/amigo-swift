@@ -62,7 +62,11 @@ public class Table: SchemaItem, FromClause{
 
             if value.indexed{
                 let label = "\(self.label)_\(value.label)_idx"
-                addIndex(Index(label, columns:value))
+                if value.unique{
+                    addIndex(Index(label, unique: true, columns:value))
+                } else {
+                    addIndex(Index(label, columns:value))
+                }
             }
         }
 
