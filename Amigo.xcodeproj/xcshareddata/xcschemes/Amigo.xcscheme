@@ -41,6 +41,30 @@
                <Test
                   Identifier = "AmigoQuerySetTests/testManyToManyThroughModelAddRejected()">
                </Test>
+               <Test
+                  Identifier = "SQLiteCompilerTests/testComparisionPredicateColumns()">
+               </Test>
+               <Test
+                  Identifier = "SQLiteCompilerTests/testComparisionPredicateEqual()">
+               </Test>
+               <Test
+                  Identifier = "SQLiteCompilerTests/testComparisionPredicateForeignKey()">
+               </Test>
+               <Test
+                  Identifier = "SQLiteCompilerTests/testComparisionPredicateGreaterThan()">
+               </Test>
+               <Test
+                  Identifier = "SQLiteCompilerTests/testComparisionPredicateGreaterThanEqual()">
+               </Test>
+               <Test
+                  Identifier = "SQLiteCompilerTests/testComparisionPredicateLessThan()">
+               </Test>
+               <Test
+                  Identifier = "SQLiteCompilerTests/testComparisionPredicateLessThanEqual()">
+               </Test>
+               <Test
+                  Identifier = "SQLiteCompilerTests/testCompoundPredicate()">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

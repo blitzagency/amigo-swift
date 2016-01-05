@@ -10,32 +10,54 @@ import XCTest
 import CoreData
 @testable import Amigo
 
-class SQLiteCompilerTests: XCTestCase {
 
-    var engine: SQLiteEngineFactory!
-    var meta: MetaData!
-    
+
+
+class SQLiteCompilerTests: AmigoTestBase {
+
+    //var engine: SQLiteEngineFactory!
+    let meta = MetaData()
+    //let engine  = SQLiteEngineFactory(":memory:", echo: true).engine
+    var sqliteEngine: Engine!
+
     override func setUp() {
         super.setUp()
-
-        meta = MetaData()
-        engine = SQLiteEngine(":memory:")
+        sqliteEngine = engine.engine
+//        meta = MetaData()
+//        engine = SQLiteEngine(":memory:")
     }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
+//
+//    override func tearDown() {
+//        // Put teardown code here. This method is called after the invocation of each test method in the class.
+//        super.tearDown()
+//    }
 
-    var amigo: Amigo{
-        let name = "App"
-        let bundle = NSBundle(forClass: self.dynamicType)
-        let url = NSURL(string:bundle.pathForResource(name, ofType: "momd")!)!
-        let mom = NSManagedObjectModel(contentsOfURL: url)!
-        let engine = SQLiteEngineFactory(":memory:", echo: true)
 
-        return Amigo(mom, factory: engine)
-    }
+
+//    let amigo: Amigo = {
+//
+//        let uuid = ORMModel(UUIDModel.self,
+//            IntegerField("id", primaryKey: true),
+//            UUIDField("objId", indexed: true, unique: true)
+//        )
+//
+//        // now initialize Amigo
+//        let engine = SQLiteEngineFactory(":memory:", echo: true)
+//        let amigo = Amigo([uuid], factory: engine)
+//        amigo.createAll()
+//
+//        return amigo
+//    }()
+
+//    var amigo: Amigo{
+//        let name = "App"
+//        let bundle = NSBundle(forClass: self.dynamicType)
+//        let url = NSURL(string:bundle.pathForResource(name, ofType: "momd")!)!
+//        let mom = NSManagedObjectModel(contentsOfURL: url)!
+//        let engine = SQLiteEngineFactory(":memory:", echo: true)
+//
+//        return Amigo(mom, factory: engine)
+//    }
 
     func testCreateTable() {
         let t1 = Table("dogs", metadata: meta,
@@ -43,7 +65,7 @@ class SQLiteCompilerTests: XCTestCase {
             Column("name", type: String.self)
         )
 
-        let sql = engine.compiler.compile(CreateTable(t1))
+        let sql = sqliteEngine.compiler.compile(CreateTable(t1))
         let expected = "CREATE TABLE IF NOT EXISTS dogs (" +
               "\n\t" + "id INTEGER PRIMARY KEY NOT NULL," +
               "\n\t" + "name TEXT NULL" +
@@ -61,7 +83,7 @@ class SQLiteCompilerTests: XCTestCase {
             Index("dogs_color_idx", "color")
         )
         
-        let sql = engine.compiler.compile(CreateTable(t1))
+        let sql = sqliteEngine.compiler.compile(CreateTable(t1))
         let expected = "CREATE TABLE IF NOT EXISTS dogs (" +
             "\n\t" + "id INTEGER PRIMARY KEY NOT NULL," +
             "\n\t" + "name TEXT NULL," +
@@ -78,7 +100,7 @@ class SQLiteCompilerTests: XCTestCase {
             Column("id", type: Int.self)
         )
 
-        let sql = engine.compiler.compile(CreateColumn(t1.c["id"]!))
+        let sql = sqliteEngine.compiler.compile(CreateColumn(t1.c["id"]!))
         let expected = "id INTEGER NULL"
 
         XCTAssertEqual(sql, expected)
@@ -89,7 +111,7 @@ class SQLiteCompilerTests: XCTestCase {
             Column("id", type: Int.self, optional: false)
         )
 
-        let sql = engine.compiler.compile(CreateColumn(t1.c["id"]!))
+        let sql = sqliteEngine.compiler.compile(CreateColumn(t1.c["id"]!))
         let expected = "id INTEGER NOT NULL"
 
         XCTAssertEqual(sql, expected)
@@ -100,7 +122,7 @@ class SQLiteCompilerTests: XCTestCase {
             Column("id", type: Int.self, primaryKey: true)
         )
 
-        let sql = engine.compiler.compile(CreateColumn(t1.c["id"]!))
+        let sql = sqliteEngine.compiler.compile(CreateColumn(t1.c["id"]!))
         let expected = "id INTEGER PRIMARY KEY NOT NULL"
 
         XCTAssertEqual(sql, expected)
@@ -118,8 +140,8 @@ class SQLiteCompilerTests: XCTestCase {
 
         XCTAssertEqual(t2.indexes.count, 1)
 
-        let column = engine.compiler.compile(CreateColumn(t2.c["dog_id"]!))
-        let index = engine.compiler.compile(CreateIndex(t2.indexes[0]))
+        let column = sqliteEngine.compiler.compile(CreateColumn(t2.c["dog_id"]!))
+        let index = sqliteEngine.compiler.compile(CreateIndex(t2.indexes[0]))
         let expectedColumn = "dog_id TEXT NULL"
         let expectedIndex = "CREATE INDEX IF NOT EXISTS people_dog_id_idx ON people (dog_id);"
 
@@ -137,7 +159,7 @@ class SQLiteCompilerTests: XCTestCase {
             Column("dog_id", type: ForeignKey(t1), optional:false)
         )
 
-        let sql = engine.compiler.compile(CreateColumn(t2.c["dog_id"]!))
+        let sql = sqliteEngine.compiler.compile(CreateColumn(t2.c["dog_id"]!))
         let expected = "dog_id TEXT NOT NULL"
 
         XCTAssertEqual(sql, expected)
@@ -148,7 +170,7 @@ class SQLiteCompilerTests: XCTestCase {
             Column("id", type: Int.self, indexed: true)
         )
 
-        let sql = engine.compiler.compile(CreateIndex(t1.indexes[0]))
+        let sql = sqliteEngine.compiler.compile(CreateIndex(t1.indexes[0]))
         let expected = "CREATE INDEX IF NOT EXISTS dogs_id_idx ON dogs (id);"
 
         XCTAssertEqual(sql, expected)
@@ -160,7 +182,7 @@ class SQLiteCompilerTests: XCTestCase {
             Index("dogs_id_idx", "id")
         )
 
-        let sql = engine.compiler.compile(CreateIndex(t1.indexes[0]))
+        let sql = sqliteEngine.compiler.compile(CreateIndex(t1.indexes[0]))
         let expected = "CREATE INDEX IF NOT EXISTS dogs_id_idx ON dogs (id);"
 
         XCTAssertEqual(sql, expected)
@@ -173,7 +195,7 @@ class SQLiteCompilerTests: XCTestCase {
             Index("dogs_id_idx", "id", "label")
         )
 
-        let sql = engine.compiler.compile(CreateIndex(t1.indexes[0]))
+        let sql = sqliteEngine.compiler.compile(CreateIndex(t1.indexes[0]))
         let expected = "CREATE INDEX IF NOT EXISTS dogs_id_idx ON dogs (id, label);"
 
         XCTAssertEqual(sql, expected)
@@ -186,8 +208,32 @@ class SQLiteCompilerTests: XCTestCase {
             Index("dogs_id_idx", unique: true, "id")
         )
 
-        let sql = engine.compiler.compile(CreateIndex(t1.indexes[0]))
+        let sql = sqliteEngine.compiler.compile(CreateIndex(t1.indexes[0]))
         let expected = "CREATE UNIQUE INDEX IF NOT EXISTS dogs_id_idx ON dogs (id);"
+
+        XCTAssertEqual(sql, expected)
+    }
+
+    func testCreateIndexFromColumn() {
+        let t1 = Table("dogs", metadata: meta,
+            Column("id", type: Int.self, primaryKey: true),
+            Column("label", type: String.self, indexed: true)
+        )
+
+        let sql = sqliteEngine.compiler.compile(CreateIndex(t1.indexes[0]))
+        let expected = "CREATE INDEX IF NOT EXISTS dogs_label_idx ON dogs (label);"
+
+        XCTAssertEqual(sql, expected)
+    }
+
+    func testCreateUniqueIndexFromColumn() {
+        let t1 = Table("dogs", metadata: meta,
+            Column("id", type: Int.self, primaryKey: true),
+            Column("label", type: String.self, indexed: true, unique: true)
+        )
+
+        let sql = sqliteEngine.compiler.compile(CreateIndex(t1.indexes[0]))
+        let expected = "CREATE UNIQUE INDEX IF NOT EXISTS dogs_label_idx ON dogs (label);"
 
         XCTAssertEqual(sql, expected)
     }
@@ -205,7 +251,7 @@ class SQLiteCompilerTests: XCTestCase {
         )
 
         let join = t2.join(t1)
-        let sql = engine.compiler.compile(join)
+        let sql = sqliteEngine.compiler.compile(join)
         let expected = "LEFT JOIN dogs ON people.dog_id = dogs.id"
 
         XCTAssertEqual(sql, expected)
@@ -218,8 +264,8 @@ class SQLiteCompilerTests: XCTestCase {
         )
 
         let select = Select(t1)
-        let sql = engine.compiler.compile(select)
-        let expected = "SELECT dogs.id, dogs.label" +
+        let sql = sqliteEngine.compiler.compile(select)
+        let expected = "SELECT dogs.id as 'dogs.id', dogs.label as 'dogs.label'" +
                 "\n" + "FROM dogs;"
 
         XCTAssertEqual(sql, expected)
@@ -240,12 +286,11 @@ class SQLiteCompilerTests: XCTestCase {
         let j1 = t2.join(t1)
         let select = Select(t2, t1).selectFrom(j1)
 
-        let sql = engine.compiler.compile(select)
+        let sql = sqliteEngine.compiler.compile(select)
 
-        let expected = "SELECT people.id, people.label, people.dog_id, dogs.id, dogs.label" +
+        let expected = "SELECT people.id as 'people.id', people.label as 'people.label', people.dog_id as 'people.dog_id', dogs.id as 'dogs.id', dogs.label as 'dogs.label'" +
                 "\n" + "FROM people" +
                 "\n" + "LEFT JOIN dogs ON people.dog_id = dogs.id;"
-
 
         XCTAssertEqual(sql, expected)
     }
@@ -273,9 +318,9 @@ class SQLiteCompilerTests: XCTestCase {
         let select = Select(t3, t1, t2).selectFrom(j1, j2)
 
 
-        let sql = engine.compiler.compile(select)
+        let sql = sqliteEngine.compiler.compile(select)
 
-        let expected = "SELECT people.id, people.label, people.dog_id, people.cat_id, dogs.id, dogs.label, cats.id, cats.label" +
+        let expected = "SELECT people.id as 'people.id', people.label as 'people.label', people.dog_id as 'people.dog_id', people.cat_id as 'people.cat_id', dogs.id as 'dogs.id', dogs.label as 'dogs.label', cats.id as 'cats.id', cats.label as 'cats.label'" +
                 "\n" + "FROM people" +
                 "\n" + "LEFT JOIN dogs ON people.dog_id = dogs.id" +
                 "\n" + "LEFT JOIN cats ON people.cat_id = cats.id;"
@@ -285,7 +330,9 @@ class SQLiteCompilerTests: XCTestCase {
 
     func testComparisionPredicateColumns() {
         let query = amigo.query(Dog).filter("id = label")
-        if let(sql, params) = query.compileFilter(){
+        let table = amigo.tableIndex["dog"]!.table
+
+        if let(sql, params) = query.compileFilter(table){
             XCTAssertEqual("amigotests_dog.id = amigotests_dog.label", sql)
             print(sql)
             print(params)
@@ -297,7 +344,9 @@ class SQLiteCompilerTests: XCTestCase {
 
     func testComparisionPredicateEqual() {
         let query = amigo.query(Dog).filter("id = 1")
-        if let(sql, params) = query.compileFilter(){
+        let table = amigo.tableIndex["dog"]!.table
+
+        if let(sql, params) = query.compileFilter(table){
             XCTAssertEqual("amigotests_dog.id = ?", sql)
             XCTAssert(params.count == 1)
             XCTAssert(params[0].integerValue == 1)
@@ -308,7 +357,9 @@ class SQLiteCompilerTests: XCTestCase {
 
     func testComparisionPredicateGreaterThan() {
         let query = amigo.query(Dog).filter("id > 1")
-        if let(sql, params) = query.compileFilter(){
+        let table = amigo.tableIndex["dog"]!.table
+
+        if let(sql, params) = query.compileFilter(table){
             XCTAssertEqual("amigotests_dog.id > ?", sql)
             XCTAssert(params.count == 1)
             XCTAssert(params[0].integerValue == 1)
@@ -319,7 +370,9 @@ class SQLiteCompilerTests: XCTestCase {
 
     func testComparisionPredicateGreaterThanEqual() {
         let query = amigo.query(Dog).filter("id >= 1")
-        if let(sql, params) = query.compileFilter(){
+        let table = amigo.tableIndex["dog"]!.table
+
+        if let(sql, params) = query.compileFilter(table){
             XCTAssertEqual("amigotests_dog.id >= ?", sql)
             XCTAssert(params.count == 1)
             XCTAssert(params[0].integerValue == 1)
@@ -330,7 +383,9 @@ class SQLiteCompilerTests: XCTestCase {
 
     func testComparisionPredicateLessThan() {
         let query = amigo.query(Dog).filter("id < 1")
-        if let(sql, params) = query.compileFilter(){
+        let table = amigo.tableIndex["dog"]!.table
+
+        if let(sql, params) = query.compileFilter(table){
             XCTAssertEqual("amigotests_dog.id < ?", sql)
             XCTAssert(params.count == 1)
             XCTAssert(params[0].integerValue == 1)
@@ -341,7 +396,9 @@ class SQLiteCompilerTests: XCTestCase {
 
     func testComparisionPredicateLessThanEqual() {
         let query = amigo.query(Dog).filter("id <= 1")
-        if let(sql, params) = query.compileFilter(){
+        let table = amigo.tableIndex["dog"]!.table
+
+        if let(sql, params) = query.compileFilter(table){
             XCTAssertEqual("amigotests_dog.id <= ?", sql)
             XCTAssert(params.count == 1)
             XCTAssert(params[0].integerValue == 1)
@@ -352,7 +409,9 @@ class SQLiteCompilerTests: XCTestCase {
 
     func testComparisionPredicateForeignKey() {
         let query = amigo.query(People).selectRelated("dog").filter("dog.id = 1")
-        if let(sql, params) = query.compileFilter(){
+        let table = amigo.tableIndex["dog"]!.table
+
+        if let(sql, params) = query.compileFilter(table){
             XCTAssertEqual("amigotests_dog.id = ?", sql)
             XCTAssert(params.count == 1)
             XCTAssert(params[0].integerValue == 1)
@@ -367,7 +426,9 @@ class SQLiteCompilerTests: XCTestCase {
 
         //let query = amigo.query(Dog).filter("id > 1 and id < 20")
 
-        if let(sql, params) = query.compileFilter(){
+        let table = amigo.tableIndex["dog"]!.table
+
+        if let(sql, params) = query.compileFilter(table){
             let expected = "(amigotests_dog.id > ? AND amigotests_dog.id < ?) OR amigotests_dog.id = ? OR (amigotests_dog.id = ? AND amigotests_dog.id != ?)"
             XCTAssertEqual(expected, sql)
             XCTAssert(params.count == 5)

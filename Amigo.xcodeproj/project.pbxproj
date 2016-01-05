@@ -31,6 +31,7 @@
 		238395E81C39BEA800D5241F /* FMDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238395E61C39BA2E00D5241F /* FMDB.framework */; };
 		238395EB1C39F77100D5241F /* SpecializedColumnTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238395EA1C39F77100D5241F /* SpecializedColumnTests.swift */; };
 		238395ED1C3A29E300D5241F /* Fields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238395EC1C3A29E300D5241F /* Fields.swift */; };
+		238395EE1C3B0FB300D5241F /* SQLiteCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B43B041B4C074400F90DFD /* SQLiteCompilerTests.swift */; };
 		23A5D0751B62E7C000915F24 /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A5D0741B62E7C000915F24 /* Relationship.swift */; };
 		23B43AEF1B4AAA0000F90DFD /* MetaTableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B43AE61B49DA3400F90DFD /* MetaTableTests.swift */; };
 		23B43AF01B4B037100F90DFD /* Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F3CFC11B46CEF200D8AD4C /* Table.swift */; };
@@ -529,6 +530,7 @@
 				237BC1071B6C22A200F07892 /* ModelMappingTests.swift in Sources */,
 				23474D031B52FC3F004D05BE /* AmigoTests.swift in Sources */,
 				23B43B0D1B4C77E400F90DFD /* SelectTests.swift in Sources */,
+				238395EE1C3B0FB300D5241F /* SQLiteCompilerTests.swift in Sources */,
 				23B43AF31B4B16B700F90DFD /* MetaColumnTests.swift in Sources */,
 				231C84DF1B55424A00AD6C06 /* MOMExtensionTests.swift in Sources */,
 				23ED24491B41CB1100C2AF28 /* Models.swift in Sources */,
