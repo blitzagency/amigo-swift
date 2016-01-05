@@ -126,6 +126,7 @@ They take the same arguments as a :code:`Column`, but the type can be omitted.
     The UUIDField, in SQLite, will store your data as a 16 byte BLOB
     but it on the model itself it will be realized as a :code:`String`.
 
+
 Lets take a look at how using these might look:
 
 .. code-block:: swift
@@ -163,6 +164,44 @@ Remember above how we said that the :code:`UUIDField` stores it's data
 as a BLOB. The above filter does the right thing, it will convert the
 privided string when filtering on the :code:`UUIDField` to it's data
 representation.
+
+
+UUIDField
+--------------------------
+
+The UUIDField will serve you best if you provide a :code:`defaultValue`
+function. 99% of the time you will likely want something like this
+when you define the column unless you want to be responsible for always
+setting the value yourself:
+
+.. code-block:: swift
+
+    import Amigo
+
+    class MyModel: AmigoModel{
+        dynamic var id: Int = 0
+        dynamic var objId: String!
+    }
+
+    let myModel = ORMModel(MyModel.self,
+            IntegerField("id", primaryKey: true)
+            UUIDField("objId", indexed: true, unique: true){
+                // the input case doesn't actually matter, but
+                // rfc 4122 states that:
+                //
+                // The hexadecimal values "a" through "f" are output as
+                // lower case characters and are case insensitive on input.
+                //
+                // See: https://www.ietf.org/rfc/rfc4122.txt
+                // Declaration of syntactic structure
+                return NSUUID().UUIDString.lowercaseString
+            }
+        )
+
+.. note::
+
+    The deserialization of the UUIDField will return you a String that is lowercased
+    per RFC 4122.
 
 
 One additional type exists for Column initialization and that's :code:`Amigo.ForeignKey`
