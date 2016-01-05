@@ -28,11 +28,23 @@ public class Column: SchemaItem, CustomStringConvertible, Hashable{
         return description.hashValue
     }
 
-    public func serialize(value: AnyObject?) -> AnyObject? {
+    public func modelValue(model: AmigoModel) -> AnyObject? {
+        return model.valueForKey(label)
+    }
+
+    public func valueOrDefault(model: AmigoModel) -> AnyObject? {
+        return valueOrDefault(modelValue(model))
+    }
+
+    public func valueOrDefault(value: AnyObject?) -> AnyObject? {
         if let defaultValue = defaultValue where value == nil{
             return defaultValue()
         }
 
+        return value
+    }
+
+    public func serialize(value: AnyObject?) -> AnyObject? {
         return value
     }
 
