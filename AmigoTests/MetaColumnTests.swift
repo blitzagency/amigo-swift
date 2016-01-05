@@ -78,12 +78,26 @@ class MetaColumnTests: XCTestCase {
         XCTAssertTrue(column.type == NSAttributeType.DecimalAttributeType)
     }
 
+    func testNoDefaultValueWithNil() {
+        let column = Column("test", type: String.self)
+
+        let value = column.valueOrDefault(nil)
+        XCTAssert(value == nil)
+    }
+
+    func testNoDefaultValueWithValue() {
+        let column = Column("test", type: String.self)
+
+        let value = column.valueOrDefault("ollie") as! String
+        XCTAssert(value == "ollie")
+    }
+
     func testDefaultValue() {
         let column = Column("test", type: String.self){
             return "ollie"
         }
 
-        let value = column.serialize(nil) as! String
+        let value = column.valueOrDefault(nil) as! String
         XCTAssert(value == "ollie")
     }
 
@@ -92,7 +106,7 @@ class MetaColumnTests: XCTestCase {
             return "ollie"
         }
 
-        let value = column.serialize("lucy") as! String
+        let value = column.valueOrDefault("lucy") as! String
         XCTAssert(value == "lucy")
     }
 
