@@ -11,4 +11,7 @@ import Foundation
 @objc
 public class AmigoModel: NSObject{
 
+    public override init(){
+        super.init()
+    }
 }
