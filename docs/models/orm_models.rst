@@ -19,6 +19,10 @@ instances. Lets take a look at how we do that.
     class Dog: AmigoModel{
         dynamic var id: NSNumber!
         dynamic var label: String!
+
+        public override init(){
+            super.init()
+        }
     }
 
     let dog = ORMModel(Dog.self,
@@ -133,7 +137,11 @@ Lets take a look at how using these might look:
 
     class MyModel: AmigoModel{
         dynamic var id: Int = 0
-        dynamic var objId: String!
+        dynamic var objId: String?
+
+        public override init(){
+            super.init()
+        }
     }
 
     let myModel = ORMModel(MyModel.self,
@@ -180,7 +188,11 @@ setting the value yourself:
 
     class MyModel: AmigoModel{
         dynamic var id: Int = 0
-        dynamic var objId: String!
+        dynamic var objId: String?
+
+        public override init(){
+            super.init()
+        }
     }
 
     let myModel = ORMModel(MyModel.self,
@@ -223,14 +235,22 @@ mapping as follows:
     import Amigo
 
     class Dog: AmigoModel{
-        dynamic var id: NSNumber!
-        dynamic var label: String!
+        dynamic var id = 0
+        dynamic var label = "New Dog"
+
+        public override init(){
+            super.init()
+        }
     }
 
     class Person: AmigoModel{
-        dynamic var id: NSNumber!
-        dynamic var label: String!
-        dynamic var dog: Dog!
+        dynamic var id = 0
+        dynamic var label = "New Person"
+        dynamic var dog: Dog?
+
+        public override init(){
+            super.init()
+        }
     }
 
     let dog = ORMModel(Dog.self,
@@ -279,12 +299,20 @@ In code it would look like this:
     class Dog: AmigoModel{
         dynamic var id: NSNumber!
         dynamic var label: String!
+
+        public override init(){
+            super.init()
+        }
     }
 
     class Person: AmigoModel{
         dynamic var id: NSNumber!
         dynamic var label: String!
         dynamic var dog: Dog!
+
+        public override init(){
+            super.init()
+        }
     }
 
     let dog = ORMModel(Dog.self,
@@ -357,11 +385,19 @@ Starting with the following data models:
     class Parent: AmigoModel{
         dynamic var id: NSNumber!
         dynamic var label: String!
+
+        public override init(){
+            super.init()
+        }
     }
 
     class Child: AmigoModel{
         dynamic var id: NSNumber!
         dynamic var label: String!
+
+        public override init(){
+            super.init()
+        }
     }
 
 Now, lets manually map them and create the relationship:
@@ -442,11 +478,19 @@ Lets make a manual example.
     class Workout: AmigoModel{
         dynamic var id: NSNumber!
         dynamic var label: String!
+
+        public override init(){
+            super.init()
+        }
     }
 
     class WorkoutExercise: AmigoModel{
         dynamic var id: NSNumber!
         dynamic var label: String!
+
+        public override init(){
+            super.init()
+        }
     }
 
     class WorkoutMeta: AmigoModel{
