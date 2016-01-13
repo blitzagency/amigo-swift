@@ -154,41 +154,53 @@ public class AmigoSession: AmigoConfigured{
         return action
     }
 
-    public func add<T: AmigoModel>(objs: T...){
-        add(objs)
+    public func add<T: AmigoModel>(obj: T, upsert: Bool = false){
+        add([obj], upsert: upsert)
     }
+
+//    public func add<T: AmigoModel>(objs objs: T...){
+//        add(objs)
+//    }
 
     public func delete<T: AmigoModel>(objs: T...){
         delete(objs)
     }
 
-    public func add<T: AmigoModel>(objs: [T]){
-        objs.forEach(self.addModel)
+    public func add<T: AmigoModel>(objs: [T], upsert: Bool = false){
+        objs.forEach{ self.addModel($0, upsert: upsert) }
     }
 
     public func delete<T: AmigoModel>(objs: [T]){
         objs.forEach(self.deleteModel)
     }
 
-    public func addModel<T: AmigoModel>(obj: T){
+    public func addModel<T: AmigoModel>(obj: T, upsert: Bool = false){
         let type = obj.dynamicType.description()
         let model = typeIndex[type]!
 
         var isInsert = false
-        let key = obj.valueForKey(model.primaryKey.label)
+        let primaryKeyValue = model.primaryKey.valueOrDefault(obj)
 
-        switch model.primaryKey.type{
-        case .Integer16AttributeType: fallthrough
-        case .Integer32AttributeType: fallthrough
-        case .Integer64AttributeType:
-            if key == nil{
-                isInsert = true
-            } else if let key = key as? Int where key == 0 {
+        if let value = primaryKeyValue where upsert{
+            if let _ = query(T).filter("\(model.primaryKey.label) = '\(value)'").all().first{
+                isInsert = false
+            } else {
                 isInsert = true
             }
-        default:
-            if key == nil{
-                isInsert = true
+        } else {
+            switch model.primaryKey.type{
+            case .Integer16AttributeType: fallthrough
+            case .Integer32AttributeType: fallthrough
+            case .Integer64AttributeType:
+                if primaryKeyValue == nil{
+                    isInsert = true
+                } else if let primaryKeyValue = primaryKeyValue as? Int where primaryKeyValue == 0 {
+                    isInsert = true
+                }
+            default:
+                if primaryKeyValue == nil{
+                    isInsert = true
+                }
             }
         }
 
