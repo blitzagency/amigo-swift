@@ -43,6 +43,10 @@ public class SQLiteEngine: NSObject, Engine{
             let savepoint = "amigo.sqllite.\(savepoints.count)"
             savepoints.append(savepoint)
 
+            if self.echo{
+                self.echo("SAVEPOINT", params: [savepoint])
+            }
+
             db.inDatabase{
                 do{
                     try $0.startSavePointWithName(savepoint)
@@ -51,6 +55,10 @@ public class SQLiteEngine: NSObject, Engine{
                 }
             }
         } else {
+            if self.echo{
+                self.echo("BEGIN TRANSACTION", params: nil)
+            }
+
             db.inDatabase{$0.beginTransaction()}
         }
     }
@@ -68,6 +76,10 @@ public class SQLiteEngine: NSObject, Engine{
             }
 
         } else {
+
+            if self.echo{
+                self.echo("COMMIT TRANSACTION", params: nil)
+            }
             db.inDatabase{$0.commit()}
         }
     }
@@ -75,6 +87,10 @@ public class SQLiteEngine: NSObject, Engine{
     public func rollback(){
         if savepoints.count > 0{
             let savepoint = savepoints.removeLast()
+
+            if self.echo{
+                self.echo("ROLLBACK TO SAVEPOINT", params: [savepoint])
+            }
 
             db.inDatabase{
                 do {
@@ -85,6 +101,10 @@ public class SQLiteEngine: NSObject, Engine{
 
             }
         } else {
+
+            if self.echo{
+                self.echo("ROLLBACK TRANSACTION", params: nil)
+            }
             db.inDatabase{$0.rollback()}
         }
     }
