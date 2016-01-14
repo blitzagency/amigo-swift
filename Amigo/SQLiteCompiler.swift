@@ -169,8 +169,10 @@ public struct SQLiteCompiler: Compiler{
         var columnLabels = [String]()
         var placeholders = [String]()
 
+
         for each in expression.table.sortedColumns{
-            if each.primaryKey && each.type == .Integer64AttributeType{
+
+            if each.primaryKey && expression.upsert == false{
                 continue
             }
 
@@ -180,8 +182,9 @@ public struct SQLiteCompiler: Compiler{
 
         let columnData = columnLabels.joinWithSeparator(", ")
         let placeholderData = placeholders.joinWithSeparator(", ")
+        let orReplace = expression.upsert ? "OR REPLACE INTO" : "INTO"
 
-        let sql = "INSERT INTO \(expression.table.label) (\(columnData)) VALUES (\(placeholderData));"
+        let sql = "INSERT \(orReplace) \(expression.table.label) (\(columnData)) VALUES (\(placeholderData));"
         return sql
     }
 
