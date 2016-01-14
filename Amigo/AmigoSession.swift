@@ -9,6 +9,16 @@
 import Foundation
 import CoreData
 
+
+public enum DatabaseAction{
+    case Insert
+    case Update
+    case Delete
+    case Unknown
+}
+
+
+/// Used in Many-To-Many queries
 public class AmigoSessionModelAction<T: AmigoModel>{
     let using: T
     let usingModel: ORMModel
@@ -140,6 +150,12 @@ public class AmigoSession: AmigoConfigured{
         begin()
     }
 
+    public func batch(handler: (BatchOperation) -> ()) {
+        let operation = engine.createBatchOperation(self)
+        handler(operation)
+        operation.execute()
+    }
+
     public func query<T: AmigoModel>(value: T.Type) -> QuerySet<T>{
         let type = value.description()
         let model = typeIndex[type]!
@@ -158,12 +174,8 @@ public class AmigoSession: AmigoConfigured{
         add([obj], upsert: upsert)
     }
 
-//    public func add<T: AmigoModel>(objs objs: T...){
-//        add(objs)
-//    }
-
-    public func delete<T: AmigoModel>(objs: T...){
-        delete(objs)
+    public func delete<T: AmigoModel>(obj: T){
+        delete([obj])
     }
 
     public func add<T: AmigoModel>(objs: [T], upsert: Bool = false){
@@ -174,41 +186,41 @@ public class AmigoSession: AmigoConfigured{
         objs.forEach(self.deleteModel)
     }
 
-    public func addModel<T: AmigoModel>(obj: T, upsert: Bool = false){
-        let type = obj.dynamicType.description()
-        let model = typeIndex[type]!
+    public func addAction<T: AmigoModel>(obj: T) -> DatabaseAction{
+        let model = obj.amigoModel
+        let primaryKeyValue = model.primaryKey.modelValue(obj)
 
-        var isInsert = false
-        let primaryKeyValue = model.primaryKey.valueOrDefault(obj)
-
-        if let value = primaryKeyValue where upsert{
-            if let _ = query(T).filter("\(model.primaryKey.label) = '\(value)'").all().first{
-                isInsert = false
-            } else {
-                isInsert = true
+        switch model.primaryKey.type{
+        case .Integer16AttributeType: fallthrough
+        case .Integer32AttributeType: fallthrough
+        case .Integer64AttributeType:
+            if primaryKeyValue == nil{
+                return .Insert
+            } else if let primaryKeyValue = primaryKeyValue as? Int where primaryKeyValue == 0 {
+                return .Insert
             }
-        } else {
-            switch model.primaryKey.type{
-            case .Integer16AttributeType: fallthrough
-            case .Integer32AttributeType: fallthrough
-            case .Integer64AttributeType:
-                if primaryKeyValue == nil{
-                    isInsert = true
-                } else if let primaryKeyValue = primaryKeyValue as? Int where primaryKeyValue == 0 {
-                    isInsert = true
-                }
-            default:
-                if primaryKeyValue == nil{
-                    isInsert = true
-                }
+        default:
+            if primaryKeyValue == nil{
+                return .Insert
             }
         }
 
-        if isInsert {
-            insert(obj, model: model)
-        } else {
-            update(obj, model: model)
+        return .Update
+    }
+
+    public func addModel<T: AmigoModel>(obj: T, upsert isUpsert: Bool = false){
+        let model = obj.amigoModel
+        let action: DatabaseAction
+
+        if isUpsert{
+            upsert(obj, model: model)
+            return
         }
+
+        action = addAction(obj)
+
+        let method = (action == .Insert) ? insert : update
+        method(obj, model: model)
     }
 
 
@@ -241,19 +253,81 @@ public class AmigoSession: AmigoConfigured{
         }
     }
 
-    func insert<T: AmigoModel>(obj: T, model: ORMModel){
+    public func upsertSQL(model: ORMModel) -> String{
+        if let sql = model.sqlUpsert{
+            return sql
+        }
+
+        let insert = model.table.insert(upsert: true)
+        let sql = engine.compiler.compile(insert)
+        model.sqlUpsert = sql
+
+        return sql
+    }
+
+    public func insertSQL(model: ORMModel) -> String{
+        if let sql = model.sqlInsert{
+            return sql
+        }
+
         let insert = model.table.insert()
         let sql = engine.compiler.compile(insert)
+        model.sqlInsert = sql
+
+        return sql
+    }
+
+    
+    public func updateSQL<T: AmigoModel>(obj: T) -> (String, [AnyObject]){
+        let model = obj.amigoModel
+        let id = model.primaryKey.label
+        let value = obj.valueForKey(id)!
+
+
+        let sql: String
+        let predicateParams: [AnyObject]
+
+        if let cachedSql = model.sqlUpdate{
+            sql = cachedSql
+            predicateParams = [model.primaryKey.modelValue(obj)!]
+
+        } else {
+            var update = model.table.update()
+            let predicate = NSPredicate(format: "\(id) = '\(value)'")
+            let (filter, params) = engine.compiler.compile(predicate, table: model.table, models: config.tableIndex)
+
+            update.filter(filter)
+            sql = engine.compiler.compile(update)
+            predicateParams = params
+
+            model.sqlUpdate = sql
+        }
+
+        return (sql, predicateParams)
+    }
+
+    public func updateSQL(model: ORMModel) -> String{
+
+        return ""
+    }
+
+    public func insertParams<T: AmigoModel>(obj: T, upsert isUpsert: Bool = false) -> SQLParams{
+        let model = obj.amigoModel
         var automaticPrimaryKey = false
         var params = [AnyObject]()
         var defaults = [String: AnyObject]()
 
         model.table.sortedColumns.forEach{
-            let value: AnyObject?
+            var value: AnyObject?
+            let null = NSNull()
+
 
             if $0.primaryKey && $0.type == .Integer64AttributeType{
                 automaticPrimaryKey = true
-                return
+
+                if isUpsert == false {
+                    return
+                }
             }
 
             if let column = $0.foreignKey{
@@ -265,14 +339,20 @@ public class AmigoSession: AmigoConfigured{
                     if let id = fkModel.primaryKey.modelValue(target) {
                         value = id
                     } else {
-                        self.insert(target, model: fkModel)
+
+                        if isUpsert{
+                            self.upsert(target, model: fkModel)
+                        } else {
+                            self.insert(target, model: fkModel)
+                        }
+
                         value = fkModel.primaryKey.modelValue(target)
                     }
                 } else {
-                    value = NSNull()
+                    value = null
                 }
             } else {
-
+                value = null
                 let currentValue = $0.modelValue(obj)
                 let candidateValue = $0.valueOrDefault(currentValue)
 
@@ -283,26 +363,23 @@ public class AmigoSession: AmigoConfigured{
                 if let serializedValue = $0.serialize(candidateValue){
                     value = serializedValue
                 } else {
-                    value = NSNull()
+                    value = null
                 }
             }
-
+            
             params.append(value!)
         }
 
-        engine.execute(sql, params: params)
+        let sqlParams = SQLParams(
+            queryParams: params,
+            defaultValues: defaults,
+            automaticPrimaryKey: automaticPrimaryKey
+        )
 
-        if automaticPrimaryKey && engine.fetchLastRowIdAfterInsert{
-            let id = self.engine.lastrowid()
-            obj.setValue(id, forKey: model.primaryKey.label)
-        }
+        return sqlParams
+    }
 
-        // push any defaults back to the model only AFTER
-        // we have executed the query
-        defaults.forEach{ key, value in
-            obj.setValue(value, forKey: key)
-        }
-
+    public func insertManyToManyThroughModel<T: AmigoModel>(obj: T, model: ORMModel, upsert: Bool = false){
         if let relationship = model.throughModelRelationship{
             let left = relationship.left
             let right = relationship.right
@@ -327,79 +404,62 @@ public class AmigoSession: AmigoConfigured{
             let throughParam = obj.valueForKey("\(model.primaryKey.label)")!
 
             let params = [leftParam, rightParam, throughParam]
-            let insert = relationship.associationTable.insert()
+            let insert = relationship.associationTable.insert(upsert: upsert)
             let sql = engine.compiler.compile(insert)
-
+            
             engine.execute(sql, params: params)
         }
     }
 
-    func update<T: AmigoModel>(obj: T, model: ORMModel){
-        let id = model.primaryKey.label
-        let value = obj.valueForKey(id)!
-        var update = model.table.update()
-        let sql: String
-        let predicate = NSPredicate(format: "\(id) = '\(value)'")
-        var params = [AnyObject]()
-        var defaults = [String: AnyObject]()
+    func upsert<T: AmigoModel>(obj: T, model: ORMModel){
+        let sql = upsertSQL(model)
+        let params = insertParams(obj, upsert: true)
 
-        model.table.sortedColumns.forEach{
-            let value: AnyObject?
+        engine.execute(sql, params: params.queryParams)
 
-            // is this the automatic primaryKey column?
-            // skip it for updates.
-            if $0.primaryKey && $0.type == .Integer64AttributeType{
-                return
-            }
-
-            // TODO:
-            // this is a duplicated block of code from:
-            // func insert<T: AmigoModel>(obj: T, model: ORMModel) 
-            // above, refactor this...
-            if let column = $0.foreignKey{
-                let parts = $0.label.unicodeScalars.split{ $0 == "_"}.map(String.init)
-
-                if let target = obj.valueForKey(parts[0]) as? AmigoModel{
-                    let fkModel = config.tableIndex[column.relatedColumn.table!.label]!
-
-                    if let id = fkModel.primaryKey.modelValue(target) {
-                        value = id
-                    } else {
-                        self.insert(target, model: fkModel)
-                        value = fkModel.primaryKey.modelValue(target)
-                    }
-                } else {
-                    value = NSNull()
-                }
-            } else {
-                let currentValue = $0.modelValue(obj)
-                let candidateValue = $0.valueOrDefault(currentValue)
-
-                if currentValue == nil && candidateValue != nil{
-                    defaults[$0.label] = candidateValue
-                }
-
-                if let serializedValue = $0.serialize(candidateValue){
-                    value = serializedValue
-                } else {
-                    value = NSNull()
-                }
-            }
-
-            params.append(value!)
+        if params.automaticPrimaryKey && model.primaryKey.modelValue(obj) == nil{
+            let id = self.engine.lastrowid()
+            obj.setValue(id, forKey: model.primaryKey.label)
         }
-
-        let (filter, predicateParams) = engine.compiler.compile(predicate, table: model.table, models: config.tableIndex)
-        params = params + predicateParams
-        update.filter(filter)
-
-        sql = engine.compiler.compile(update)
-
-        engine.execute(sql, params: params)
 
         // push any defaults back to the model only AFTER
         // we have executed the query
-        defaults.forEach{ key, value in
+        params.defaultValues.forEach{ key, value in
+            obj.setValue(value, forKey: key)
+        }
+
+        self.insertManyToManyThroughModel(obj, model: model, upsert: true)
+    }
+
+    func insert<T: AmigoModel>(obj: T, model: ORMModel){
+        let sql = insertSQL(model)
+        let params = insertParams(obj)
+
+        engine.execute(sql, params: params.queryParams)
+
+        if params.automaticPrimaryKey && engine.fetchLastRowIdAfterInsert{
+            let id = self.engine.lastrowid()
+            obj.setValue(id, forKey: model.primaryKey.label)
+        }
+
+        // push any defaults back to the model only AFTER
+        // we have executed the query
+        params.defaultValues.forEach{ key, value in
+            obj.setValue(value, forKey: key)
+        }
+
+        self.insertManyToManyThroughModel(obj, model: model)
+    }
+
+    func update<T: AmigoModel>(obj: T, model: ORMModel){
+        let(sql, predicateParams) = updateSQL(obj)
+        let params = insertParams(obj)
+
+        engine.execute(sql, params: (params.queryParams + predicateParams))
+
+        // push any defaults back to the model only AFTER
+        // we have executed the query
+        params.defaultValues.forEach{ key, value in
             obj.setValue(value, forKey: key)
         }
     }
