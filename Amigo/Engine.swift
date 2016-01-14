@@ -18,6 +18,7 @@ public protocol Engine {
 
     func execute<Input, Output>(sql: String, params: [AnyObject]!, mapper: Input -> Output) -> Output
     func execute(sql: String, params: [AnyObject]!)
+    func execute(sql: String)
     func execute<T: AmigoModel>(queryset: QuerySet<T>) -> [T]
 
     func beginTransaction()
