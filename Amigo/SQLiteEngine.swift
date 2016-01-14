@@ -145,6 +145,18 @@ public class SQLiteEngine: NSObject, Engine{
         return output!
     }
 
+
+    public func execute(sql: String){
+        db.inDatabase{ db in
+
+            if self.echo{
+                self.echo(sql)
+            }
+
+            db.executeStatements(sql)
+        }
+    }
+
     public func execute(sql: String, params: [AnyObject]! = nil){
 
         db.inDatabase{ db in
