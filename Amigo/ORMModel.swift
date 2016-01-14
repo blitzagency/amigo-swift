@@ -85,6 +85,8 @@ public class ORMModel: Hashable{
         columns = tmpColumns
         primaryKey = tmpPrimaryKey
         relationships = tmpRelationships
+
+        AmigoModel.amigoModelIndex[qualifiedType] = self
     }
 
     public var hashValue: Int{
