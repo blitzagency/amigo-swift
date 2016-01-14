@@ -79,6 +79,15 @@ extension FromClause{
         fatalError("Cannot insert from non-table: \(self)")
     }
 
+    public func insert(upsert upsert: Bool) -> Insert{
+        if let table = self as? Table{
+            return Insert(table, upsert: upsert)
+        }
+
+        fatalError("Cannot insert from non-table: \(self)")
+    }
+
+
     public func update() -> Update{
         if let table = self as? Table{
             return Update(table)
