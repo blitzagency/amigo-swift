@@ -7,6 +7,9 @@
 //
 
 import XCTest
+import FMDB
+@testable import Amigo
+
 
 class AmigoSessionTests: AmigoTestBase {
 
@@ -430,6 +433,87 @@ class AmigoSessionTests: AmigoTestBase {
         }
 
         XCTAssert(session.query(Dog).all().count == 0)
+    }
+
+    func testBatchDeleteThroughModels(){
+
+        let session = amigo.session
+
+        let w1 = Workout()
+        w1.label = "foo"
+
+        let w2 = Workout()
+        w2.label = "bar"
+
+        let e1 = WorkoutExercise()
+        e1.label = "Jumping Jacks"
+
+        let e2 = WorkoutExercise()
+        e2.label = "Push-Ups"
+
+        let m1 = WorkoutMeta()
+        m1.workout = w1
+        m1.exercise = e1
+        m1.duration = 60000
+        m1.position = 1
+
+        let m2 = WorkoutMeta()
+        m2.workout = w1
+        m2.exercise = e2
+        m2.duration = 15
+        m2.position = 2
+
+        // intentionally add a new WorkoutMeta with
+        // a different parent workout
+        // so the id of the final WorkoutMeta will
+        // not be consecutive
+        let m3 = WorkoutMeta()
+        m3.workout = w2
+        m3.exercise = e2
+        m3.duration = 60
+        m3.position = 1
+
+        let m4 = WorkoutMeta()
+        m4.workout = w1
+        m4.exercise = e2
+        m4.duration = 25
+        m4.position = 3
+
+        session.add(w1)
+        session.add(w2)
+        session.add(e1)
+        session.add(e2)
+        session.add(m1)
+        session.add(m2)
+        session.add(m3)
+        session.add(m4)
+
+        XCTAssert(session.query(WorkoutMeta).all().count == 4)
+
+        let sql = "SELECT COUNT(*) FROM amigotests_workout_amigotests_workoutexercise"
+
+        amigo.execute(sql, params: nil){ (results: FMResultSet) -> () in
+            results.next()
+            let count = Int(results.intForColumnIndex(0))
+            XCTAssert(count == 4)
+            results.close()
+        }
+
+        session.batch{ batch in
+            batch.delete(m1)
+            batch.delete(m2)
+            batch.delete(m3)
+            batch.delete(m4)
+        }
+
+        XCTAssert(session.query(WorkoutMeta).all().count == 0)
+
+        amigo.execute(sql, params: nil){ (results: FMResultSet) -> () in
+            results.next()
+            let count = Int(results.intForColumnIndex(0))
+            XCTAssert(count == 0)
+            results.close()
+        }
     }
 
     func testAddManyToMany(){

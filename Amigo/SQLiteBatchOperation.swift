@@ -16,6 +16,8 @@ public class SQLiteBatchOperation: BatchOperation{
     var upsertCache = [String: [String]]()
     var updateCache = [String: [String]]()
     var deleteCache = [String: [String]]()
+    var deleteThoughCache = [String: [String]]()
+
     var statements = ""
 
     public required init(session: AmigoSession){
@@ -50,6 +52,19 @@ public class SQLiteBatchOperation: BatchOperation{
         }
 
         statements = statements + buildDelete(obj) + "\n"
+
+        deleteThroughModelRelationship(obj)
+    }
+
+    public func deleteThroughModelRelationship<T: AmigoModel>(obj: T){
+        let model = obj.amigoModel
+
+        guard let relationship = model.throughModelRelationship,
+              let value = model.primaryKey.modelValue(obj) else {
+            return
+        }
+
+        statements = statements + buildDeleteThroughModel(obj, relationship: relationship, value: value) + "\n"
     }
 
     public func execute(){
@@ -117,6 +132,25 @@ public class SQLiteBatchOperation: BatchOperation{
             let parts = sql.componentsSeparatedByString("?")
 
             deleteCache[obj.qualifiedName] = parts
+            fragments = parts
+        }
+
+        let sql = buildSQL(fragments, params: params)
+        return sql
+    }
+
+    func buildDeleteThroughModel<T: AmigoModel>(obj: T, relationship: ManyToMany, value: AnyObject) -> String{
+        let model = obj.amigoModel
+        let fragments: [String]
+        let params = [model.primaryKey.modelValue(obj)!]
+
+        if let parts = deleteThoughCache[obj.qualifiedName] {
+            fragments = parts
+        } else {
+            let (sql, _) = session.deleteThroughModelSQL(obj, relationship: relationship, value: value)
+            let parts = sql.componentsSeparatedByString("?")
+
+            deleteThoughCache[obj.qualifiedName] = parts
             fragments = parts
         }
 
