@@ -33,8 +33,23 @@ public class SQLiteBatchOperation: BatchOperation{
         if action == .Insert {
             statements = statements + buildInsert(obj, upsert: isUpsert) + "\n"
         } else {
+
+            // deny an update for a model without a primary key
+            guard let _ = obj.amigoModel.primaryKey.modelValue(obj) else {
+                return
+            }
+
             statements = statements + buildUpdate(obj) + "\n"
         }
+    }
+
+    public func delete<T: AmigoModel>(obj: T){
+        // deny an delete for a model without a primary key
+        guard let _ = obj.amigoModel.primaryKey.modelValue(obj) else {
+            return
+        }
+
+        statements = statements + buildDelete(obj) + "\n"
     }
 
     public func execute(){
@@ -58,14 +73,7 @@ public class SQLiteBatchOperation: BatchOperation{
             fragments = parts
         }
 
-        var sql = ""
-        let escaped = params.map(escape)
-
-        escaped.enumerate().forEach{ index, part in
-            sql = sql + fragments[index] + part
-        }
-
-        sql = sql + fragments.last!
+        let sql = buildSQL(fragments, params: params)
         return sql
 
     }
@@ -93,14 +101,38 @@ public class SQLiteBatchOperation: BatchOperation{
             fragments = parts
         }
 
-        var sql = ""
-        let escaped = values.queryParams.map(escape)
+        let sql = buildSQL(fragments, params: values.queryParams)
+        return sql
+    }
 
-        escaped.enumerate().forEach{ index, part in
-            sql = sql + fragments[index] + part
+    func buildDelete<T: AmigoModel>(obj: T) -> String {
+        let model = obj.amigoModel
+        let fragments: [String]
+        let params = [model.primaryKey.modelValue(obj)!]
+
+        if let parts = deleteCache[obj.qualifiedName] {
+            fragments = parts
+        } else {
+            let (sql, _) = session.deleteSQL(obj)
+            let parts = sql.componentsSeparatedByString("?")
+
+            deleteCache[obj.qualifiedName] = parts
+            fragments = parts
         }
 
-        sql = sql + fragments.last!
+        let sql = buildSQL(fragments, params: params)
+        return sql
+    }
+
+    func buildSQL(queryFragments: [String], params: [AnyObject]) -> String{
+        var sql = ""
+        let escaped = params.map(escape)
+
+        escaped.enumerate().forEach{ index, part in
+            sql = sql + queryFragments[index] + part
+        }
+
+        sql = sql + queryFragments.last!
         return sql
     }
 
