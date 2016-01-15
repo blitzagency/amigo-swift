@@ -406,6 +406,32 @@ class AmigoSessionTests: AmigoTestBase {
         XCTAssert(lucy.count == 10)
     }
 
+    func testBatchDelete(){
+        let session = amigo.session
+
+        let objs = (0..<10).map{ _ -> Dog in
+            let d = Dog()
+            d.label = "lucy's"
+            return d
+        }
+
+        session.batch{ batch in
+            objs.forEach{
+                batch.add($0)
+            }
+        }
+
+        let results = session.query(Dog).all().flatMap{$0}
+        XCTAssert(results.count == objs.count)
+
+
+        session.batch{ batch in
+            results.forEach(batch.delete)
+        }
+
+        XCTAssert(session.query(Dog).all().count == 0)
+    }
+
     func testAddManyToMany(){
 
         let session = amigo.session
