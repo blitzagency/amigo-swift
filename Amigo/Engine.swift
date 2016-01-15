@@ -12,6 +12,7 @@ public protocol Engine {
     var compiler: Compiler {get}
     var fetchLastRowIdAfterInsert: Bool {get}
 
+
     func createAll(sql: String)
     func generateSchema(meta: MetaData) -> String
     func lastrowid() -> Int
@@ -20,6 +21,7 @@ public protocol Engine {
     func execute(sql: String, params: [AnyObject]!)
     func execute(sql: String)
     func execute<T: AmigoModel>(queryset: QuerySet<T>) -> [T]
+    func createBatchOperation(session: AmigoSession) -> BatchOperation
 
     func beginTransaction()
     func commitTransaction()
