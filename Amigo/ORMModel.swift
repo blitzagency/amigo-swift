@@ -25,6 +25,7 @@ public class ORMModel: Hashable{
     public var throughModelRelationship: ManyToMany?
     public var sqlInsert: String?
     public var sqlUpsert: String?
+    public var sqlUpdate: String?
 
     public convenience init<T:AmigoModel>(_ qualifiedType: T.Type, _ properties: MetaItem...){
         let type = qualifiedType.description()
