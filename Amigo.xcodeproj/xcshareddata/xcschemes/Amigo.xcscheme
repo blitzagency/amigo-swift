@@ -42,6 +42,9 @@
                   Identifier = "AmigoQuerySetTests/testManyToManyThroughModelAddRejected()">
                </Test>
                <Test
+                  Identifier = "AmigoSessionTests/testManyToManyThroughModelAddRejected()">
+               </Test>
+               <Test
                   Identifier = "SQLiteCompilerTests/testComparisionPredicateColumns()">
                </Test>
                <Test
