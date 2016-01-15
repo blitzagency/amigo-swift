@@ -10,8 +10,14 @@ import Foundation
 
 public protocol BatchOperation{
     init(session: AmigoSession)
+
     func add<T: AmigoModel>(obj: T)
-    func add<T: AmigoModel>(value: T, upsert: Bool)
+    func add<T: AmigoModel>(obj: T, upsert: Bool)
+    func add<T: AmigoModel>(obj: [T], upsert: Bool)
+    func add<T: AmigoModel>(obj: [T])
+
     func delete<T: AmigoModel>(obj: T)
+    func delete<T: AmigoModel>(obj: [T])
+
     func execute()
 }
