@@ -141,21 +141,35 @@ class AmigoSessionTests: AmigoTestBase {
         XCTAssertNil(candidate)
     }
 
-    func testCachedUpdate(){
-
+    func testDeleteCached(){
         let session = amigo.session
         let o1 = Dog()
         o1.label = "lucy"
-        session.add(o1)
 
-        o1.label = "ollie"
-        session.add(o1)
+        let o2 = Dog()
+        o2.label = "ollie"
 
-        o1.label = "gato"
-        session.add(o1)
+        let o3 = Dog()
+        o3.label = "gato"
 
-        let candidate = amigo.query(Dog).get(1)!
-        XCTAssertEqual(candidate.label, "gato")
+        session.add([o1, o2, o3])
+
+        var candidates = session.query(Dog).all()
+        XCTAssert(candidates.count == 3)
+
+        session.delete([o1, o2, o3])
+
+        candidates = session.query(Dog).all()
+        XCTAssert(candidates.count == 0)
+    }
+
+    func testDeleteNoPrimaryKey(){
+        let session = amigo.session
+        let o1 = Dog()
+
+        o1.label = "lucy"
+
+        session.delete(o1)
     }
 
     func testUpdate(){
@@ -176,6 +190,23 @@ class AmigoSessionTests: AmigoTestBase {
 
         candidate = amigo.query(Dog).get(1)
         XCTAssertEqual(candidate!.label, "ollie")
+    }
+
+    func testUpdateCached(){
+
+        let session = amigo.session
+        let o1 = Dog()
+        o1.label = "lucy"
+        session.add(o1)
+
+        o1.label = "ollie"
+        session.add(o1)
+
+        o1.label = "gato"
+        session.add(o1)
+
+        let candidate = amigo.query(Dog).get(1)!
+        XCTAssertEqual(candidate.label, "gato")
     }
 
     func testUpdateFromNoForeignKey(){
@@ -257,7 +288,25 @@ class AmigoSessionTests: AmigoTestBase {
             }
         }
 
-        XCTAssert(session.query(Dog).all().count == 10)
+        // batches don't update anying on the models, so we
+        // need to re-query to get our primary keys.
+        // or doing an upsert will be an insert as the 
+        // primaryKey will be NULL
+        let results = session.query(Dog).all().flatMap{$0}
+        XCTAssert(results.count == 10)
+
+        results.forEach{
+            $0.label = "ollie's"
+        }
+
+        session.batch{ batch in
+            results.forEach{
+                batch.add($0, upsert: true)
+            }
+        }
+
+        XCTAssert(session.query(Dog).filter("label = \"ollie's\"").all().count == 10)
+        XCTAssert(session.query(Dog).filter("label = \"lucy's\"").all().count == 0)
     }
 
     func testBatchInsert(){
@@ -281,7 +330,7 @@ class AmigoSessionTests: AmigoTestBase {
 
     func testBatchUpdate(){
 
-        var session = amigo.session
+        let session = amigo.session
 
         let objs = (0..<10).map{ _ -> Dog in
             let d = Dog()
@@ -313,7 +362,7 @@ class AmigoSessionTests: AmigoTestBase {
 
         let session = amigo.session
 
-        let objs = (0..<1000).map{ _ -> Dog in
+        let objs = (0..<10).map{ _ -> Dog in
             let d = Dog()
             d.label = "lucy's"
             return d
@@ -331,19 +380,30 @@ class AmigoSessionTests: AmigoTestBase {
             $0.label = "ollie's"
         }
 
-        let new = (0..<1000).map{ _ -> Dog in
+        let new = (0..<10).map{ _ -> Dog in
             let d = Dog()
             d.label = "lucy's"
             return d
         }
 
-        measureBlock{
-            session.batch{ batch in
-                results.forEach(batch.add)
-                new.forEach(batch.add)
-            }
+
+        session.batch{ batch in
+            results.forEach(batch.add)
+            new.forEach(batch.add)
         }
-        
+
+
+        let total = session.query(Dog).all()
+        let ollie = session.query(Dog)
+            .filter("label = \"ollie's\"")
+            .all()
+        let lucy = session.query(Dog)
+            .filter("label = \"lucy's\"")
+            .all()
+
+        XCTAssert(total.count == 20)
+        XCTAssert(ollie.count == 10)
+        XCTAssert(lucy.count == 10)
     }
 
     func testAddManyToMany(){
