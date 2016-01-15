@@ -304,11 +304,26 @@ public class AmigoSession: AmigoConfigured{
         return (sql, predicateParams)
     }
 
+    public func insertThroughModelSQL<T: AmigoModel>(obj: T, relationship: ManyToMany, upsert isUpsert: Bool = false) -> String{
+        let model = obj.amigoModel
+        let cacheKey = relationship.associationTable.label
+        let sql: String
+
+        if let cachedSql = model.sqlInsertThrough[cacheKey]{
+            sql = cachedSql
+        } else {
+            let insert = relationship.associationTable.insert(upsert: isUpsert)
+            sql = engine.compiler.compile(insert)
+            model.sqlInsertThrough[cacheKey] = sql
+        }
+
+        return sql
+    }
+
     public func insertThroughModelSQL<T: AmigoModel>(obj: T, relationship: ManyToMany, upsert isUpsert: Bool = false) -> (String, [AnyObject]) {
         let model = obj.amigoModel
         let left = relationship.left
         let right = relationship.right
-        let cacheKey = relationship.associationTable.label
 
         var leftKey: String!
         var rightKey: String!
@@ -335,13 +350,7 @@ public class AmigoSession: AmigoConfigured{
         let throughParam = model.primaryKey.modelValue(obj)!
         let params = [leftParam, rightParam, throughParam]
 
-        if let cachedSql = model.sqlInsertThrough[cacheKey]{
-            sql = cachedSql
-        } else {
-            let insert = relationship.associationTable.insert(upsert: isUpsert)
-            sql = engine.compiler.compile(insert)
-            model.sqlInsertThrough[cacheKey] = sql
-        }
+        sql = insertThroughModelSQL(obj, relationship: relationship, upsert: isUpsert)
 
         return (sql, params)
     }
