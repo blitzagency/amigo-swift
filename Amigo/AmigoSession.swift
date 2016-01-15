@@ -304,6 +304,48 @@ public class AmigoSession: AmigoConfigured{
         return (sql, predicateParams)
     }
 
+    public func insertThroughModelSQL<T: AmigoModel>(obj: T, relationship: ManyToMany, upsert isUpsert: Bool = false) -> (String, [AnyObject]) {
+        let model = obj.amigoModel
+        let left = relationship.left
+        let right = relationship.right
+        let cacheKey = relationship.associationTable.label
+
+        var leftKey: String!
+        var rightKey: String!
+        let sql: String
+
+        model.foreignKeys.forEach{ (key: String, c: Column) -> Void in
+
+            guard let fk = c.foreignKey else {
+                return
+            }
+
+            if fk.relatedColumn == left.primaryKey{
+                leftKey = key
+            }
+
+            if fk.relatedColumn == right.primaryKey{
+                rightKey = key
+            }
+        }
+
+        // we definitely want this to blow up if any of these params don't exist.
+        let leftParam = obj.valueForKeyPath("\(leftKey).\(left.primaryKey!.label)")!
+        let rightParam = obj.valueForKeyPath("\(rightKey).\(right.primaryKey!.label)")!
+        let throughParam = model.primaryKey.modelValue(obj)!
+        let params = [leftParam, rightParam, throughParam]
+
+        if let cachedSql = model.sqlInsertThrough[cacheKey]{
+            sql = cachedSql
+        } else {
+            let insert = relationship.associationTable.insert(upsert: isUpsert)
+            sql = engine.compiler.compile(insert)
+            model.sqlInsertThrough[cacheKey] = sql
+        }
+
+        return (sql, params)
+    }
+
     public func deleteThroughModelSQL<T: AmigoModel>(obj: T, relationship: ManyToMany, value: AnyObject) -> (String, [AnyObject]) {
 
         let model = obj.amigoModel
@@ -401,36 +443,13 @@ public class AmigoSession: AmigoConfigured{
         return sqlParams
     }
 
-    public func insertManyToManyThroughModel<T: AmigoModel>(obj: T, model: ORMModel, upsert: Bool = false){
-        if let relationship = model.throughModelRelationship{
-            let left = relationship.left
-            let right = relationship.right
-
-            var leftKey: String!
-            var rightKey: String!
-
-            model.foreignKeys.forEach{ (key: String, c: Column) -> Void in
-
-                let fk = c.foreignKey!
-                if fk.relatedColumn == relationship.left.primaryKey{
-                    leftKey = key
-                }
-
-                if fk.relatedColumn == relationship.right.primaryKey{
-                    rightKey = key
-                }
-            }
-
-            let leftParam = obj.valueForKeyPath("\(leftKey).\(left.primaryKey!.label)")!
-            let rightParam = obj.valueForKeyPath("\(rightKey).\(right.primaryKey!.label)")!
-            let throughParam = obj.valueForKey("\(model.primaryKey.label)")!
-
-            let params = [leftParam, rightParam, throughParam]
-            let insert = relationship.associationTable.insert(upsert: upsert)
-            let sql = engine.compiler.compile(insert)
-            
-            engine.execute(sql, params: params)
+    public func insertManyToManyThroughModel<T: AmigoModel>(obj: T, model: ORMModel, upsert isUpsert: Bool = false){
+        guard let relationship = model.throughModelRelationship else {
+            return
         }
+
+        let (sql, params) = insertThroughModelSQL(obj, relationship: relationship, upsert: isUpsert)
+        engine.execute(sql, params: params)
     }
 
     func upsert<T: AmigoModel>(obj: T, model: ORMModel){
@@ -503,12 +522,13 @@ public class AmigoSession: AmigoConfigured{
 
     public func deleteThroughModelRelationship<T: AmigoModel>(obj: T){
         let model = obj.amigoModel
-        let value = model.primaryKey.modelValue(obj)
 
-        if let relationship = model.throughModelRelationship, let value = value {
-
-            let (sql, predicateParams) = deleteThroughModelSQL(obj, relationship: relationship, value: value)
-            engine.execute(sql, params: predicateParams)
+        guard let relationship = model.throughModelRelationship,
+              let value = model.primaryKey.modelValue(obj) else {
+            return
         }
+
+        let (sql, predicateParams) = deleteThroughModelSQL(obj, relationship: relationship, value: value)
+        engine.execute(sql, params: predicateParams)
     }
 }
