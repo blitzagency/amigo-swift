@@ -516,6 +516,135 @@ class AmigoSessionTests: AmigoTestBase {
         }
     }
 
+    func testBatchInsertThroughModelsNoPrimaryKey(){
+
+        let session = amigo.session
+
+        let w1 = Workout()
+        w1.label = "foo"
+
+        let w2 = Workout()
+        w2.label = "bar"
+
+        let e1 = WorkoutExercise()
+        e1.label = "Jumping Jacks"
+
+        let e2 = WorkoutExercise()
+        e2.label = "Push-Ups"
+
+        let m1 = WorkoutMeta()
+        m1.workout = w1
+        m1.exercise = e1
+        m1.duration = 60000
+        m1.position = 1
+
+        let m2 = WorkoutMeta()
+        m2.workout = w1
+        m2.exercise = e2
+        m2.duration = 15
+        m2.position = 2
+
+        // intentionally add a new WorkoutMeta with
+        // a different parent workout
+        // so the id of the final WorkoutMeta will
+        // not be consecutive
+        let m3 = WorkoutMeta()
+        m3.workout = w2
+        m3.exercise = e2
+        m3.duration = 60
+        m3.position = 1
+
+        let m4 = WorkoutMeta()
+        m4.workout = w1
+        m4.exercise = e2
+        m4.duration = 25
+        m4.position = 3
+
+        print(w1.id ?? 0)
+        session.batch{ batch in
+            batch.add([m1, m2, m3, m4])
+        }
+
+        XCTAssert(session.query(WorkoutMeta).all().count == 4)
+
+        let sql = "SELECT COUNT(*) FROM amigotests_workout_amigotests_workoutexercise"
+
+        amigo.execute(sql, params: nil){ (results: FMResultSet) -> () in
+            results.next()
+            let count = Int(results.intForColumnIndex(0))
+            XCTAssert(count == 4)
+            results.close()
+        }
+    }
+
+    func testBatchInsertThroughModelsPrimaryKey(){
+
+        let session = amigo.session
+
+        let w1 = Workout()
+        w1.id = 1
+        w1.label = "foo"
+
+        let w2 = Workout()
+        w2.id = 2
+        w2.label = "bar"
+
+        let e1 = WorkoutExercise()
+        e1.id = 1
+        e1.label = "Jumping Jacks"
+
+        let e2 = WorkoutExercise()
+        e2.id = 2
+        e2.label = "Push-Ups"
+
+        let m1 = WorkoutMeta()
+        m1.id = 1
+        m1.workout = w1
+        m1.exercise = e1
+        m1.duration = 60000
+        m1.position = 1
+
+        let m2 = WorkoutMeta()
+        m2.id = 2
+        m2.workout = w1
+        m2.exercise = e2
+        m2.duration = 15
+        m2.position = 2
+
+        // intentionally add a new WorkoutMeta with
+        // a different parent workout
+        // so the id of the final WorkoutMeta will
+        // not be consecutive
+        let m3 = WorkoutMeta()
+        m3.id = 3
+        m3.workout = w2
+        m3.exercise = e2
+        m3.duration = 60
+        m3.position = 1
+
+        let m4 = WorkoutMeta()
+        m4.id = 4
+        m4.workout = w1
+        m4.exercise = e2
+        m4.duration = 25
+        m4.position = 3
+
+        session.batch{ batch in
+            batch.add([m1, m2, m3, m4], upsert: true)
+        }
+
+        XCTAssert(session.query(WorkoutMeta).all().count == 4)
+
+        let sql = "SELECT COUNT(*) FROM amigotests_workout_amigotests_workoutexercise"
+
+        amigo.execute(sql, params: nil){ (results: FMResultSet) -> () in
+            results.next()
+            let count = Int(results.intForColumnIndex(0))
+            XCTAssert(count == 4)
+            results.close()
+        }
+    }
+
     func testAddManyToMany(){
 
         let session = amigo.session
