@@ -224,35 +224,6 @@ public class AmigoSession: AmigoConfigured{
     }
 
 
-    public func deleteModel<T: AmigoModel>(obj: T){
-        let type = obj.dynamicType.description()
-        let model = typeIndex[type]!
-        let id = model.primaryKey.label
-        let value = obj.valueForKey(id)!
-        let predicate = NSPredicate(format: "\(id) = \(value)")
-        var delete = model.table.delete()
-
-        let (filter, params) = engine.compiler.compile(predicate, table: model.table, models: config.tableIndex)
-        delete.filter(filter)
-
-        let sql = engine.compiler.compile(delete)
-        engine.execute(sql, params: params)
-
-        if let relationship = model.throughModelRelationship{
-
-            let throughModel = relationship.through!
-            let throughId = "\(throughModel.label)_\(throughModel.primaryKey!.label)"
-
-            var delete = relationship.associationTable.delete()
-            let predicate = NSPredicate(format: "\(throughId) = \(value)")
-            let (filter, params) = engine.compiler.compile(predicate, table: relationship.associationTable, models: config.tableIndex)
-            delete.filter(filter)
-
-            let sql = engine.compiler.compile(delete)
-            engine.execute(sql, params: params)
-        }
-    }
-
     public func upsertSQL(model: ORMModel) -> String{
         if let sql = model.sqlUpsert{
             return sql
@@ -306,9 +277,60 @@ public class AmigoSession: AmigoConfigured{
         return (sql, predicateParams)
     }
 
-    public func updateSQL(model: ORMModel) -> String{
+    public func deleteSQL<T: AmigoModel>(obj: T) -> (String, [AnyObject]){
+        let model = obj.amigoModel
+        let id = model.primaryKey.label
+        let value = obj.valueForKey(id)!
 
-        return ""
+        let sql: String
+        let predicateParams: [AnyObject]
+
+        if let cachedSql = model.sqlDelete{
+            sql = cachedSql
+            predicateParams = [model.primaryKey.modelValue(obj)!]
+
+        } else {
+            var delete = model.table.delete()
+            let predicate = NSPredicate(format: "\(id) = '\(value)'")
+            let (filter, params) = engine.compiler.compile(predicate, table: model.table, models: config.tableIndex)
+
+            delete.filter(filter)
+            sql = engine.compiler.compile(delete)
+            predicateParams = params
+
+            model.sqlDelete = sql
+        }
+
+        return (sql, predicateParams)
+    }
+
+    public func deleteThroughModelSQL<T: AmigoModel>(obj: T, relationship: ManyToMany, value: AnyObject) -> (String, [AnyObject]) {
+
+        let model = obj.amigoModel
+        let throughModel = relationship.through!
+        let throughId = "\(throughModel.label)_\(throughModel.primaryKey!.label)"
+
+        let sql: String
+        let predicateParams: [AnyObject]
+        let cacheKey = relationship.associationTable.label
+
+        if let cachedSql = model.sqlDeleteThrough[cacheKey]{
+            sql = cachedSql
+            predicateParams = [value]
+
+        } else {
+            var delete = relationship.associationTable.delete()
+            let predicate = NSPredicate(format: "\(throughId) = \(value)")
+            let (filter, params) = engine.compiler.compile(predicate, table: relationship.associationTable, models: config.tableIndex)
+
+            delete.filter(filter)
+            sql = engine.compiler.compile(delete)
+            predicateParams = params
+
+            model.sqlDeleteThrough[cacheKey] = sql
+        }
+
+        return (sql, predicateParams)
     }
 
     public func insertParams<T: AmigoModel>(obj: T, upsert isUpsert: Bool = false) -> SQLParams{
@@ -461,6 +483,24 @@ public class AmigoSession: AmigoConfigured{
         // we have executed the query
         params.defaultValues.forEach{ key, value in
             obj.setValue(value, forKey: key)
+        }
+    }
+
+    public func deleteModel<T: AmigoModel>(obj: T){
+        let(sql, predicateParams) = deleteSQL(obj)
+        engine.execute(sql, params: predicateParams)
+
+        deleteThroughModelRelationship(obj)
+    }
+
+    public func deleteThroughModelRelationship<T: AmigoModel>(obj: T){
+        let model = obj.amigoModel
+        let value = model.primaryKey.modelValue(obj)
+
+        if let relationship = model.throughModelRelationship, let value = value {
+
+            let (sql, predicateParams) = deleteThroughModelSQL(obj, relationship: relationship, value: value)
+            engine.execute(sql, params: predicateParams)
         }
     }
 }
