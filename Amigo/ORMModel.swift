@@ -28,6 +28,7 @@ public class ORMModel: Hashable{
     public var sqlUpdate: String?
     public var sqlDelete: String?
     public var sqlDeleteThrough = [String: String]()
+    public var sqlInsertThrough = [String: String]()
 
     public convenience init<T:AmigoModel>(_ qualifiedType: T.Type, _ properties: MetaItem...){
         let type = qualifiedType.description()
