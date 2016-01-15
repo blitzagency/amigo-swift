@@ -16,7 +16,9 @@ public class SQLiteBatchOperation: BatchOperation{
     var upsertCache = [String: [String]]()
     var updateCache = [String: [String]]()
     var deleteCache = [String: [String]]()
-    var deleteThoughCache = [String: [String]]()
+    var deleteThroughCache = [String: [String]]()
+    var insertThroughCache = [String: [String]]()
+    var upsertThroughCache = [String: [String]]()
 
     var statements = ""
 
@@ -28,12 +30,29 @@ public class SQLiteBatchOperation: BatchOperation{
        add(obj, upsert: false)
     }
 
+    public func add<T: AmigoModel>(obj: [T]) {
+        obj.forEach{
+            add($0, upsert: false)
+        }
+    }
+
+    public func add<T: AmigoModel>(obj: [T], upsert isUpsert: Bool = false) {
+        obj.forEach{
+            add($0, upsert: isUpsert)
+        }
+    }
+
     public func add<T: AmigoModel>(obj: T, upsert isUpsert: Bool = false) {
 
         let action = session.addAction(obj)
+        let model = obj.amigoModel
 
-        if action == .Insert {
-            statements = statements + buildInsert(obj, upsert: isUpsert) + "\n"
+        if action == .Insert || isUpsert {
+            if let relationship = model.throughModelRelationship{
+                addThroughModel(obj, relationship: relationship, upsert: isUpsert)
+            } else {
+                statements = statements + buildInsert(obj, upsert: isUpsert) + "\n"
+            }
         } else {
 
             // deny an update for a model without a primary key
@@ -43,6 +62,77 @@ public class SQLiteBatchOperation: BatchOperation{
 
             statements = statements + buildUpdate(obj) + "\n"
         }
+    }
+
+    public func addThroughModel<T: AmigoModel>(obj: T, relationship: ManyToMany, upsert isUpsert: Bool = false){
+        let model = obj.amigoModel
+        let left = relationship.left
+        let right = relationship.right
+
+        var leftKey: String!
+        var rightKey: String!
+
+        model.foreignKeys.forEach{ (key: String, c: Column) -> Void in
+            guard let fk = c.foreignKey else {
+                return
+            }
+
+            if fk.relatedColumn == left.primaryKey{
+                leftKey = key
+            }
+
+            if fk.relatedColumn == right.primaryKey{
+                rightKey = key
+            }
+        }
+
+        // this will save the 2 foreign keys as well.
+        // if we have to do this then the associationTable
+        // will get it's inserts as well. This effectively
+        // defeats the batching, but such is life, we don't have
+        // enough info to proceed so we have to do it.
+        // 
+        // Batching with ThoughModels is only effective if 
+        // you have all the keys. For example if you are
+        // syncing with a remote server and that server is
+        // providing you all of the primary keys for the 
+        // models involved.
+        if model.primaryKey.modelValue(obj) == nil{
+            session.add(obj, upsert: isUpsert)
+            return
+        }
+
+        if obj.valueForKeyPath("\(leftKey).\(left.primaryKey!.label)") == nil{
+            if let leftModel = obj.valueForKeyPath("\(leftKey)") as? AmigoModel {
+                session.add(leftModel, upsert: isUpsert)
+            }
+        }
+
+        if obj.valueForKeyPath("\(rightKey).\(right.primaryKey!.label)") == nil{
+            if let rightModel = obj.valueForKeyPath("\(rightKey)") as? AmigoModel {
+                session.add(rightModel, upsert: isUpsert)
+            }
+        }
+
+        // if we don't have these parms, we don't proceed
+        guard let leftParam = obj.valueForKeyPath("\(leftKey).\(left.primaryKey!.label)"),
+              let rightParam = obj.valueForKeyPath("\(rightKey).\(right.primaryKey!.label)"),
+              let throughParam = model.primaryKey.modelValue(obj) else {
+            return
+        }
+
+        // insert the ThroughModel
+        statements = statements + buildInsert(obj, upsert: isUpsert) + "\n"
+
+        let params = [leftParam, rightParam, throughParam]
+        let sql = buildInsertThough(obj, relationship: relationship, params: params, upsert: false)
+
+        // insert the data into the proper association table
+        statements = statements + sql + "\n"
+    }
+
+    public func delete<T: AmigoModel>(obj: [T]){
+        obj.forEach(delete)
     }
 
     public func delete<T: AmigoModel>(obj: T){
@@ -120,6 +210,31 @@ public class SQLiteBatchOperation: BatchOperation{
         return sql
     }
 
+    func buildInsertThough<T: AmigoModel>(obj: T, relationship: ManyToMany, params: [AnyObject], upsert isUpsert: Bool = false) -> String {
+        let fragments: [String]
+        var cache = isUpsert ? upsertThroughCache : insertThroughCache
+
+        if let parts = cache[obj.qualifiedName] {
+            fragments = parts
+        } else {
+            let sql: String = session.insertThroughModelSQL(obj, relationship: relationship, upsert: isUpsert)
+            let parts = sql.componentsSeparatedByString("?")
+
+            cache[obj.qualifiedName] = parts
+
+            if isUpsert{
+                upsertThroughCache = cache
+            } else {
+                insertThroughCache = cache
+            }
+
+            fragments = parts
+        }
+
+        let sql = buildSQL(fragments, params: params)
+        return sql
+    }
+
     func buildDelete<T: AmigoModel>(obj: T) -> String {
         let model = obj.amigoModel
         let fragments: [String]
@@ -144,13 +259,13 @@ public class SQLiteBatchOperation: BatchOperation{
         let fragments: [String]
         let params = [model.primaryKey.modelValue(obj)!]
 
-        if let parts = deleteThoughCache[obj.qualifiedName] {
+        if let parts = deleteThroughCache[obj.qualifiedName] {
             fragments = parts
         } else {
             let (sql, _) = session.deleteThroughModelSQL(obj, relationship: relationship, value: value)
             let parts = sql.componentsSeparatedByString("?")
 
-            deleteThoughCache[obj.qualifiedName] = parts
+            deleteThroughCache[obj.qualifiedName] = parts
             fragments = parts
         }
 
