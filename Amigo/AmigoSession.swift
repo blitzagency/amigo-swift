@@ -474,6 +474,10 @@ public class AmigoSession: AmigoConfigured{
     }
 
     func update<T: AmigoModel>(obj: T, model: ORMModel){
+        guard let _ = model.primaryKey.modelValue(obj) else {
+            return
+        }
+
         let(sql, predicateParams) = updateSQL(obj)
         let params = insertParams(obj)
 
@@ -487,6 +491,10 @@ public class AmigoSession: AmigoConfigured{
     }
 
     public func deleteModel<T: AmigoModel>(obj: T){
+        guard let _ = obj.amigoModel.primaryKey.modelValue(obj) else {
+            return
+        }
+
         let(sql, predicateParams) = deleteSQL(obj)
         engine.execute(sql, params: predicateParams)
 
