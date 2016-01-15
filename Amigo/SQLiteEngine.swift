@@ -35,6 +35,11 @@ public class SQLiteEngine: NSObject, Engine{
         }
     }
 
+    public func createBatchOperation(session: AmigoSession) -> BatchOperation{
+        return SQLiteBatchOperation(session: session)
+    }
+
+
     public func beginTransaction(){
         var inTransaction: Bool = false
         db.inDatabase{ inTransaction = $0.inTransaction() }
