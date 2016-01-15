@@ -271,6 +271,33 @@ class SQLiteCompilerTests: AmigoTestBase {
         XCTAssertEqual(sql, expected)
     }
 
+    func testCreateInsert() {
+        let t1 = Table("dogs", metadata: meta,
+            Column("id", type: Int.self, primaryKey: true),
+            Column("label", type: String.self)
+        )
+
+        let insert = Insert(t1)
+        let sql = sqliteEngine.compiler.compile(insert)
+        let expected = "INSERT INTO dogs (label) VALUES (?);"
+
+        XCTAssertEqual(sql, expected)
+    }
+
+    func testCreateUpsert() {
+        let t1 = Table("dogs", metadata: meta,
+            Column("id", type: Int.self, primaryKey: true),
+            Column("label", type: String.self)
+        )
+
+        let insert = Insert(t1, upsert: true)
+        let sql = sqliteEngine.compiler.compile(insert)
+        let expected = "INSERT OR REPLACE INTO dogs (id, label) VALUES (?, ?);"
+
+        XCTAssertEqual(sql, expected)
+
+    }
+
     func testCreateSelectSingleJoin() {
         let t1 = Table("dogs", metadata: meta,
             Column("id", type: Int.self, primaryKey: true),
