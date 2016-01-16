@@ -394,12 +394,15 @@ public class AmigoSession: AmigoConfigured{
             var value: AnyObject?
             let null = NSNull()
 
-
-            if $0.primaryKey && $0.type == .Integer64AttributeType{
-                automaticPrimaryKey = true
+            if $0.primaryKey {
+                if $0.type == .Integer64AttributeType{
+                    automaticPrimaryKey = true
+                }
 
                 if isUpsert == false {
-                    return
+                    if $0.defaultValue == nil{
+                        return
+                    }
                 }
             }
 
