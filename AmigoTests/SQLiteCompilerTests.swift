@@ -14,50 +14,13 @@ import CoreData
 
 
 class SQLiteCompilerTests: AmigoTestBase {
-
-    //var engine: SQLiteEngineFactory!
     let meta = MetaData()
-    //let engine  = SQLiteEngineFactory(":memory:", echo: true).engine
     var sqliteEngine: Engine!
 
     override func setUp() {
         super.setUp()
         sqliteEngine = engine.engine
-//        meta = MetaData()
-//        engine = SQLiteEngine(":memory:")
     }
-//
-//    override func tearDown() {
-//        // Put teardown code here. This method is called after the invocation of each test method in the class.
-//        super.tearDown()
-//    }
-
-
-
-//    let amigo: Amigo = {
-//
-//        let uuid = ORMModel(UUIDModel.self,
-//            IntegerField("id", primaryKey: true),
-//            UUIDField("objId", indexed: true, unique: true)
-//        )
-//
-//        // now initialize Amigo
-//        let engine = SQLiteEngineFactory(":memory:", echo: true)
-//        let amigo = Amigo([uuid], factory: engine)
-//        amigo.createAll()
-//
-//        return amigo
-//    }()
-
-//    var amigo: Amigo{
-//        let name = "App"
-//        let bundle = NSBundle(forClass: self.dynamicType)
-//        let url = NSURL(string:bundle.pathForResource(name, ofType: "momd")!)!
-//        let mom = NSManagedObjectModel(contentsOfURL: url)!
-//        let engine = SQLiteEngineFactory(":memory:", echo: true)
-//
-//        return Amigo(mom, factory: engine)
-//    }
 
     func testCreateTable() {
         let t1 = Table("dogs", metadata: meta,
