@@ -93,7 +93,7 @@ If that's too verbose for your liking you are also welcome to use the
 :code:`async` convenience methods provided by the amigo session. The
 above code would then look like this:
 
-..code-block:: swift
+.. code-block:: swift
 
     func doStuff(callback: ([YourModelType]) -> ()){
         let session = amigo.session
@@ -109,7 +109,7 @@ around weather or not you are returning results. Check out the unit tests
 
 For example, you don't have to return any result at all:
 
-..code-block:: swift
+.. code-block:: swift
 
     func addObject(){
         let session = amigo.session
@@ -135,7 +135,7 @@ For example, you don't have to return any result at all:
 
 You can also specify your own background queue to execute on:
 
-..code-block:: swift
+.. code-block:: swift
 
     let queue = dispatch_queue_create("com.amigo.async.tests", nil)
 
