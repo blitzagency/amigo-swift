@@ -18,33 +18,6 @@ Admittedly, we are probably not the best at the whole,
 *"How do you share an Xcode Project"* thing, so any recommendations
 to imporve this process are welcome.
 
-
-A Note About Multiple Threads
-----------------------------------
-
-Out of the box, Amigo uses FMDB's :code:`FMDatabaseQueue` to perform all
-of it work. This should set you up to user Amigo from any thread you like.
-
-Keep in mind though, the dispatch queue that :code:`FMDatabasesQueue` uses
-is a serial queue. So if you invoke multiple long running amigo commands
-from separate threads you will be waiting your turn in the serial queue
-before your command is executed. It's probably best to:
-
-.. code-block:: swift
-
-    func doStuff(callback: ([YourModelType]) -> ()){
-        // any background queue you  like
-        let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-
-        disptatch_async(queue) {
-            let results = amigo.query(YourModelType).all() // whatever amigo command you want
-            dispatch_async(dispatch_get_main_queue()){
-                callback(results)
-            }
-        }
-    }
-
-
 Initialization Using A Closure
 ----------------------------------
 
@@ -90,6 +63,91 @@ is done in one place:
     This style and description was taken directly from [XCGLogger]_
 
 
+A Note About Threads and Async
+-------------------------------
+
+Out of the box, Amigo uses FMDB's :code:`FMDatabaseQueue` to perform all
+of it work. This should set you up to user Amigo from any thread you like.
+
+Keep in mind though, the dispatch queue that :code:`FMDatabasesQueue` uses
+is a serial queue. So if you invoke multiple long running amigo commands
+from separate threads you will be waiting your turn in the serial queue
+before your command is executed. It's probably best to:
+
+.. code-block:: swift
+
+    func doStuff(callback: ([YourModelType]) -> ()){
+        let session = amigo.session
+        // any background queue you  like
+        let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
+        disptatch_async(queue) {
+            let results = session.query(YourModelType).all() // whatever amigo command you want
+            dispatch_async(dispatch_get_main_queue()){
+                callback(results)
+            }
+        }
+    }
+
+If that's too verbose for your liking you are also welcome to use the
+:code:`async` convenience methods provided by the amigo session. The
+above code would then look like this:
+
+..code-block:: swift
+
+    func doStuff(callback: ([YourModelType]) -> ()){
+        let session = amigo.session
+        session.async{ () -> [YourModelType] in
+            let results = session.query(YourModelType).all()
+            return results
+        }.then(callback)
+    }
+
+There are a few ways to use these async handlers. The variations revolve
+around weather or not you are returning results. Check out the unit tests
+[AmigoSessionAsyncTests]_ for more examples.
+
+For example, you don't have to return any result at all:
+
+..code-block:: swift
+
+    func addObject(){
+        let session = amigo.session
+        session.async{
+            let dog = Dog()
+            dog.label = "Lucy"
+            session.add(dog)
+        }
+    }
+
+    func addBatch(){
+        let session = amigo.session
+        session.async{
+
+            let d1 = Dog()
+            d1.label = "Lucy"
+
+            let d2 = Dog()
+            d2.label = "Ollie"
+            session.batch(session.add)
+        }
+    }
+
+You can also specify your own background queue to execute on:
+
+..code-block:: swift
+
+    let queue = dispatch_queue_create("com.amigo.async.tests", nil)
+
+    func addDoStuffOnMyOwnQueue(){
+        let session = amigo.session
+        session.async(queue: queue){
+            let dog = Dog()
+            dog.label = "Lucy"
+            session.add(dog)
+        }
+    }
+
 
 Contents:
 
@@ -101,3 +159,6 @@ Contents:
 
 .. [XCGLogger] XCGLogger Closure Initialization
    https://github.com/DaveWoodCom/XCGLogger#initialization-using-a-closure
+
+.. [AmigoSessionAsyncTests] AmigoSessionAsyncTests
+    https://github.com/blitzagency/amigo-swift/blob/master/AmigoTests/AmigoSessionAsyncTests.swift
