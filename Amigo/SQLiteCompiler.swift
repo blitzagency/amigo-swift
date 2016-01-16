@@ -177,7 +177,13 @@ public struct SQLiteCompiler: Compiler{
                 // Auto Increment  (Integer Primary Key)
                 // Don't include it, Sqlite will do it.
                 if each.type == .Integer64AttributeType{
-                    continue
+                    if expression.upsert == false {
+                        continue
+                    } else {
+                        columnLabels.append(each.label)
+                        placeholders.append("?")
+                        continue
+                    }
                 }
 
                 // Upsert means that we will need the primary key
