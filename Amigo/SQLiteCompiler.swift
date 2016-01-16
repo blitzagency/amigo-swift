@@ -172,8 +172,30 @@ public struct SQLiteCompiler: Compiler{
 
         for each in expression.table.sortedColumns{
 
-            if each.primaryKey && expression.upsert == false{
-                continue
+            if each.primaryKey {
+                
+                // Auto Increment  (Integer Primary Key)
+                // Don't include it, Sqlite will do it.
+                if each.type == .Integer64AttributeType{
+                    continue
+                }
+
+                // Upsert means that we will need the primary key
+                // column in the insert sql. If it's not an upsert
+                // we do not want to include the primary key
+                // column into the insert sql UNLESS there is a default
+                // value. We never make it to this decision tree
+                // if the user provides the pk for the model
+                // as it will be considered an update, not an insert.
+                if expression.upsert == false{
+                    if let _ = each.defaultValue {
+                        columnLabels.append(each.label)
+                        placeholders.append("?")
+                        continue
+                    } else {
+                        continue
+                    }
+                }
             }
 
             columnLabels.append(each.label)
