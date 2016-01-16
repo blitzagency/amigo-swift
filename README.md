@@ -6,6 +6,19 @@ Docs in progress are here:
 http://amigo.readthedocs.org/en/latest/
 
 
+
+## Carthage
+
+FMDB (https://github.com/ccgus/fmdb),
+as of v 2.6 FMDB, supports Carthage.
+
+Drop this into your `Cartfile`:
+
+```
+github "blitzagency/amigo-swift" ~> 0.3.0
+```
+
+
 ## Fire it up
 
 Lets create a schema:
