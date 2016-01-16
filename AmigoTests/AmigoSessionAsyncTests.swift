@@ -7,6 +7,8 @@
 //
 
 import XCTest
+import Amigo
+
 
 class AmigoSessionAsyncTests: AmigoTestBase {
 
@@ -102,6 +104,28 @@ class AmigoSessionAsyncTests: AmigoTestBase {
 
             done.fulfill()
         }
+
+        waitForExpectationsWithTimeout(60.0, handler: nil)
+        
+    }
+
+    func testAsyncResultsArray() {
+
+        let done = expectationWithDescription("done")
+        let session = amigo.session
+
+        let callback : ([Dog]) -> () = { results in
+            XCTAssert(results.count == 1)
+            done.fulfill()
+        }
+
+        session.async{ () -> [Dog] in
+            let d1 = Dog()
+            d1.label = "lucy"
+            session.add(d1)
+            return session.query(Dog).all()
+        }.then(callback)
+
 
         waitForExpectationsWithTimeout(60.0, handler: nil)
         
