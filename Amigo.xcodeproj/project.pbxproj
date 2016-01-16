@@ -80,6 +80,9 @@
 		23F9E86A1C47D27F004AF2B0 /* SQLiteFormatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9E8691C47D27F004AF2B0 /* SQLiteFormatTests.swift */; };
 		23F9E86C1C482392004AF2B0 /* BatchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9E86B1C482392004AF2B0 /* BatchOperation.swift */; };
 		23F9E86E1C48246A004AF2B0 /* SQLiteBatchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9E86D1C48246A004AF2B0 /* SQLiteBatchOperation.swift */; };
+		23F9E8701C4B03C5004AF2B0 /* AmigoSessionAsyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9E86F1C4B03C5004AF2B0 /* AmigoSessionAsyncTests.swift */; };
+		23F9E8721C4B05FA004AF2B0 /* AmigoSessionAsyncAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9E8711C4B05FA004AF2B0 /* AmigoSessionAsyncAction.swift */; };
+		23F9E8741C4B0620004AF2B0 /* AmigoSessionModelAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9E8731C4B0620004AF2B0 /* AmigoSessionModelAction.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -179,6 +182,9 @@
 		23F9E8691C47D27F004AF2B0 /* SQLiteFormatTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteFormatTests.swift; sourceTree = "<group>"; };
 		23F9E86B1C482392004AF2B0 /* BatchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BatchOperation.swift; sourceTree = "<group>"; };
 		23F9E86D1C48246A004AF2B0 /* SQLiteBatchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteBatchOperation.swift; sourceTree = "<group>"; };
+		23F9E86F1C4B03C5004AF2B0 /* AmigoSessionAsyncTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmigoSessionAsyncTests.swift; sourceTree = "<group>"; };
+		23F9E8711C4B05FA004AF2B0 /* AmigoSessionAsyncAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmigoSessionAsyncAction.swift; sourceTree = "<group>"; };
+		23F9E8731C4B0620004AF2B0 /* AmigoSessionModelAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmigoSessionModelAction.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -300,6 +306,8 @@
 				23ED242D1B41BD1F00C2AF28 /* QuerySet.swift */,
 				23474CFB1B52F3D2004D05BE /* ORMModel.swift */,
 				23ED24291B41B34400C2AF28 /* AmigoSession.swift */,
+				23F9E8711C4B05FA004AF2B0 /* AmigoSessionAsyncAction.swift */,
+				23F9E8731C4B0620004AF2B0 /* AmigoSessionModelAction.swift */,
 				23ED242B1B41B35900C2AF28 /* AmigoConfiguration.swift */,
 				23F3CFB91B45FF2400D8AD4C /* AmigoModel.swift */,
 			);
@@ -315,6 +323,7 @@
 				233118AD1B626C8200943976 /* AmigoQuerySetTests.swift */,
 				23B8F27C1B41978C00153865 /* AmigoTests.swift */,
 				233118A71B619F6D00943976 /* AmigoSessionTests.swift */,
+				23F9E86F1C4B03C5004AF2B0 /* AmigoSessionAsyncTests.swift */,
 				23C525431B446FF800B98681 /* AmigoMeta.swift */,
 				23B43B111B4EA10F00F90DFD /* EntityDescriptionMapperTests.swift */,
 				231C84DE1B55424A00AD6C06 /* MOMExtensionTests.swift */,
@@ -544,6 +553,7 @@
 				23B43AF41B4B187000F90DFD /* Engine.swift in Sources */,
 				23C754A91B5C499F00584D1E /* SQLiteEngine+Transactions.swift in Sources */,
 				23B43AFD1B4BFC1200F90DFD /* SQLiteCompiler.swift in Sources */,
+				23F9E8741C4B0620004AF2B0 /* AmigoSessionModelAction.swift in Sources */,
 				23C754AF1B5C4DB700584D1E /* Insert.swift in Sources */,
 				23B43AFF1B4C00CF00F90DFD /* SQLiteTypeCompiler.swift in Sources */,
 				23B43AF61B4B1A7500F90DFD /* SQLiteEngine+Schema.swift in Sources */,
@@ -558,6 +568,7 @@
 				23B43B091B4C16F800F90DFD /* SchemaItem.swift in Sources */,
 				23474D061B52FE8A004D05BE /* AmigoSession.swift in Sources */,
 				233118AC1B61B0BB00943976 /* Update.swift in Sources */,
+				23F9E8721C4B05FA004AF2B0 /* AmigoSessionAsyncAction.swift in Sources */,
 				231C84DD1B553A5700AD6C06 /* NSManagedObjectModel+Sorted.swift in Sources */,
 				23F9E8681C47CB51004AF2B0 /* SQLiteFormat.m in Sources */,
 				23B43B071B4C13D200F90DFD /* Index.swift in Sources */,
@@ -588,6 +599,7 @@
 				23B43AEF1B4AAA0000F90DFD /* MetaTableTests.swift in Sources */,
 				23CCC2171B67A74200BF64A6 /* PerfTests.swift in Sources */,
 				233118AA1B619FC300943976 /* AmigoTestBase.swift in Sources */,
+				23F9E8701C4B03C5004AF2B0 /* AmigoSessionAsyncTests.swift in Sources */,
 				23B43B121B4EA10F00F90DFD /* EntityDescriptionMapperTests.swift in Sources */,
 				23ED24281B41A83100C2AF28 /* App.xcdatamodeld in Sources */,
 			);
