@@ -19,6 +19,31 @@ Admittedly, we are probably not the best at the whole,
 to imporve this process are welcome.
 
 
+A Note About Multiple Threads
+----------------------------------
+
+Out of the box, Amigo uses FMDB's :code:`FMDatabaseQueue` to perform all
+of it work. This should set you up to user Amigo from any thread you like.
+
+Keep in mind though, the dispatch queue that :code:`FMDatabasesQueue` uses
+is a serial queue. So if you invoke multiple long running amigo commands
+from separate threads you will be waiting your turn in the serial queue
+before your command is executed. It's probably best to:
+
+.. code-block:: swift
+
+    func doStuff(callback: ([YourModelType]) -> ()){
+        // any background queue you  like
+        let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
+        disptatch_async(queue) {
+            let results = amigo.query(YourModelType).all() // whatever amigo command you want
+            dispatch_async(dispatch_get_main_queue()){
+                callback(results)
+            }
+        }
+    }
+
 
 Initialization Using A Closure
 ----------------------------------
