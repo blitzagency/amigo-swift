@@ -17,6 +17,7 @@ class UUIDModel: AmigoModel{
 
 class UUIDPKModel: AmigoModel{
     dynamic var objId: String!
+    dynamic var label: String = ""
 }
 
 func uuidToBytes(value: String) -> NSData{
@@ -50,7 +51,9 @@ class SpecializedColumnTests: XCTestCase {
                 // See: https://www.ietf.org/rfc/rfc4122.txt
                 // Declaration of syntactic structure
                 return NSUUID().UUIDString.lowercaseString
-            }
+            },
+            CharField("label")
+
         )
 
         // now initialize Amigo
@@ -190,7 +193,7 @@ class SpecializedColumnTests: XCTestCase {
 
         let query = session
         .query(UUIDModel)
-        .filter("objId = '\(objId)'")
+        .filter("objId = \"\(objId)\"")
 
         if let results = query.all().first{
             XCTAssert(results.id == 1)
@@ -203,12 +206,15 @@ class SpecializedColumnTests: XCTestCase {
 
     func testUUIDAsPrimaryKey() {
         let uuid = UUIDPKModel()
+        uuid.label = "Lucy"
+
         let session = amigo.session
 
         session.add(uuid)
 
         if let result = session.query(UUIDPKModel).get(uuid.objId){
             XCTAssert(result.objId == uuid.objId)
+            XCTAssert(result.label == uuid.label)
         } else {
             XCTFail("Unable to locate object for primary key: \(uuid.objId)")
         }

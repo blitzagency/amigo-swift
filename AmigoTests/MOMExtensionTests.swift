@@ -31,21 +31,45 @@ class MOMExtensionTests: XCTestCase {
     func testDependencyList() {
         let list = mom.buildDependencyList()
 
-        let author = mom.entitiesByName["Author"]!
+//        list.forEach{ key, item in
+//            print("\(key.name): \(item.count)")
+//        }
+
+
         let cat = mom.entitiesByName["Cat"]!
         let dog = mom.entitiesByName["Dog"]!
         let people = mom.entitiesByName["People"]!
+
         let post = mom.entitiesByName["Post"]!
-        let publication = mom.entitiesByName["Publication"]!
+        let author = mom.entitiesByName["Author"]!
 
-        //[Post: [Author, Publication], Dog: [], Author: [], People: [Cat, Dog], Cat: [], Publication: []]
+        let parent = mom.entitiesByName["Parent"]!
+        let child = mom.entitiesByName["Child"]!
 
+        let workout = mom.entitiesByName["Workout"]!
+        let workoutExercise = mom.entitiesByName["WorkoutExercise"]!
+        let workoutMeta = mom.entitiesByName["WorkoutMeta"]!
+
+        //[Post: [Author], Dog: [], Author: [], People: [Cat, Dog], Cat: [], Workout: [], WorkoutExercise: [], WorkoutMeta: [Workout, WorkoutExercise], Parent: [], Child: []]
+        
+
+        // Foreign Keys
         XCTAssert(list[author]!.count == 0)
-        XCTAssert(list[post]!.count == 2)
+        XCTAssert(list[post]!.count == 1)
+
+        // Foreign Keys
         XCTAssert(list[people]!.count == 2)
-        XCTAssert(list[publication]!.count == 0)
         XCTAssert(list[dog]!.count == 0)
         XCTAssert(list[cat]!.count == 0)
+
+        // Many to Many + Through Model
+        XCTAssert(list[workout]!.count == 0)
+        XCTAssert(list[workoutExercise]!.count == 0)
+        XCTAssert(list[workoutMeta]!.count == 2)
+
+        // Many To Many
+        XCTAssert(list[parent]!.count == 0)
+        XCTAssert(list[child]!.count == 0)
     }
 
     func testTopologicalSort() {
@@ -54,14 +78,25 @@ class MOMExtensionTests: XCTestCase {
         let sorted = mom.topologicalSort(list)
 
         let author = mom.entitiesByName["Author"]!
+        let post = mom.entitiesByName["Post"]!
+
         let cat = mom.entitiesByName["Cat"]!
         let dog = mom.entitiesByName["Dog"]!
         let people = mom.entitiesByName["People"]!
-        let post = mom.entitiesByName["Post"]!
-        let publication = mom.entitiesByName["Publication"]!
 
-        // [Author, Cat, Dog, People, Publication, Post]
-        let expected = [author, cat, dog, people, publication, post]
+        let parent = mom.entitiesByName["Parent"]!
+        let child = mom.entitiesByName["Child"]!
+
+        let workout = mom.entitiesByName["Workout"]!
+        let workoutExercise = mom.entitiesByName["WorkoutExercise"]!
+        let workoutMeta = mom.entitiesByName["WorkoutMeta"]!
+
+//        sorted.forEach{
+//            print($0.name)
+//        }
+
+        // [Author, Cat, Child, Dog, Parent, People, Post, Workout, WorkoutExercise, WorkoutMeta]
+        let expected = [author, cat, child, dog, parent, people, post, workout, workoutExercise, workoutMeta]
         XCTAssert(sorted == expected)
 
     }

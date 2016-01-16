@@ -23,6 +23,12 @@ public class ORMModel: Hashable{
     public let type: String
     public let label: String
     public var throughModelRelationship: ManyToMany?
+    public var sqlInsert: String?
+    public var sqlUpsert: String?
+    public var sqlUpdate: String?
+    public var sqlDelete: String?
+    public var sqlDeleteThrough = [String: String]()
+    public var sqlInsertThrough = [String: String]()
 
     public convenience init<T:AmigoModel>(_ qualifiedType: T.Type, _ properties: MetaItem...){
         let type = qualifiedType.description()
@@ -34,6 +40,7 @@ public class ORMModel: Hashable{
     }
 
     public init(_ qualifiedType: String, properties:[MetaItem]){
+
         let schemaItems = properties.filter{$0 is SchemaItem}.map{ $0 as! SchemaItem}
         let relationshipList = properties.filter{$0 is Relationship}.map{ $0 as! Relationship }
         let nameParts = qualifiedType.unicodeScalars
@@ -85,6 +92,8 @@ public class ORMModel: Hashable{
         columns = tmpColumns
         primaryKey = tmpPrimaryKey
         relationships = tmpRelationships
+
+        AmigoModel.amigoModelIndex[qualifiedType] = self
     }
 
     public var hashValue: Int{

@@ -52,7 +52,7 @@ class ModelMappingTests: XCTestCase {
         p2.label = "Bar"
         p2.dog = d1
 
-        session.add(d1, p1, p2)
+        session.add([d1, p1, p2])
 
         let results = session
             .query(People)
@@ -98,7 +98,7 @@ class ModelMappingTests: XCTestCase {
         let c2 = Child()
         c2.label = "Qux"
 
-        session.add(p1, p2,  c1, c2)
+        session.add([p1, p2,  c1, c2])
 
         // add 2 children to p1
         session.using(p1).relationship("children").add(c1, c2)
@@ -173,7 +173,7 @@ class ModelMappingTests: XCTestCase {
         m1.duration = 60000
         m1.position = 1
 
-        session.add(w1, e1, m1)
+        session.add([w1, e1, m1])
 
 
         let results = session

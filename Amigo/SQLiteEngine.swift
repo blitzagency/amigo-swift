@@ -35,6 +35,11 @@ public class SQLiteEngine: NSObject, Engine{
         }
     }
 
+    public func createBatchOperation(session: AmigoSession) -> BatchOperation{
+        return SQLiteBatchOperation(session: session)
+    }
+
+
     public func beginTransaction(){
         var inTransaction: Bool = false
         db.inDatabase{ inTransaction = $0.inTransaction() }
@@ -42,6 +47,10 @@ public class SQLiteEngine: NSObject, Engine{
         if inTransaction {
             let savepoint = "amigo.sqllite.\(savepoints.count)"
             savepoints.append(savepoint)
+
+            if self.echo{
+                self.echo("SAVEPOINT", params: [savepoint])
+            }
 
             db.inDatabase{
                 do{
@@ -51,6 +60,10 @@ public class SQLiteEngine: NSObject, Engine{
                 }
             }
         } else {
+            if self.echo{
+                self.echo("BEGIN TRANSACTION", params: nil)
+            }
+
             db.inDatabase{$0.beginTransaction()}
         }
     }
@@ -68,6 +81,10 @@ public class SQLiteEngine: NSObject, Engine{
             }
 
         } else {
+
+            if self.echo{
+                self.echo("COMMIT TRANSACTION", params: nil)
+            }
             db.inDatabase{$0.commit()}
         }
     }
@@ -75,6 +92,10 @@ public class SQLiteEngine: NSObject, Engine{
     public func rollback(){
         if savepoints.count > 0{
             let savepoint = savepoints.removeLast()
+
+            if self.echo{
+                self.echo("ROLLBACK TO SAVEPOINT", params: [savepoint])
+            }
 
             db.inDatabase{
                 do {
@@ -85,6 +106,10 @@ public class SQLiteEngine: NSObject, Engine{
 
             }
         } else {
+
+            if self.echo{
+                self.echo("ROLLBACK TRANSACTION", params: nil)
+            }
             db.inDatabase{$0.rollback()}
         }
     }
@@ -123,6 +148,18 @@ public class SQLiteEngine: NSObject, Engine{
         }
         
         return output!
+    }
+
+
+    public func execute(sql: String){
+        db.inDatabase{ db in
+
+            if self.echo{
+                self.echo(sql)
+            }
+
+            db.executeStatements(sql)
+        }
     }
 
     public func execute(sql: String, params: [AnyObject]! = nil){
