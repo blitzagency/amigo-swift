@@ -129,7 +129,10 @@ For example, you don't have to return any result at all:
 
             let d2 = Dog()
             d2.label = "Ollie"
-            session.batch(session.add)
+
+            session.batch{ batch in
+                batch.add([d1, d2])
+            }
         }
     }
 
