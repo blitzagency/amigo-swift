@@ -125,7 +125,7 @@ class AmigoQuerySetTests: AmigoTestBase {
             .query(People)
             .selectRelated("dog")
             .orderBy("dog.label", ascending: false)
-            .filter("dog.label = 'Lucy'")
+            .filter("dog.label = \"Lucy\"")
             .all()
 
         XCTAssertEqual(people.count, 1)
