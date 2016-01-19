@@ -123,20 +123,8 @@ public class Column: SchemaItem, CustomStringConvertible, Hashable{
     }
 
     public convenience init(_ label: String, type: ForeignKey, primaryKey: Bool = false, indexed: Bool = true, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil){
-        let columnLabel: String
-
-        if let range = label.rangeOfString("_id", options:.BackwardsSearch){
-            if range.endIndex == label.endIndex{
-                columnLabel = label
-            }else {
-                columnLabel = "\(label)_id"
-            }
-        } else {
-            columnLabel = "\(label)_id"
-        }
-
         let associatedType = type.relatedColumn.type
-        self.init(columnLabel, type: associatedType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
+        self.init(label, type: associatedType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
         _foreignKey = ForeignKey(type.relatedColumn, column: self)
     }
 
