@@ -300,10 +300,19 @@ public struct SQLiteCompiler: Compiler{
             if parts.count == 1{
                 column = context.table.columns[parts[0]]!
             } else if parts.count == 2{
-                let key = parts[0] + "_id"
-                column = context.table.columns[key]!.foreignKey!.relatedTable.columns[parts[1]]!
+                if let model = context.table.model{
+                    let table = model.foreignKeys[parts[0]]!.foreignKey!.relatedTable
+                    column = table.columns[parts[1]]!
+                } else {
+                    let target = context.table.columns[parts[0]]!
+                    let suffix = target.foreignKey!.relatedColumn.label
+                    let key = parts[0] + "_\(suffix)"
+                    column = context.table.columns[key]!.foreignKey!.relatedTable.columns[parts[1]]!
+                }
             } else { // fully qualified (count = 3) namespace | table | column
-                let key = parts[1] + "_id"
+                let target = context.table.columns[parts[1]]!
+                let suffix = target.foreignKey!.relatedColumn.label
+                let key = parts[1] + "_\(suffix)"
                 column = context.table.columns[key]!.foreignKey!.relatedColumn
             }
 
