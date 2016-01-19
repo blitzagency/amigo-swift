@@ -207,7 +207,10 @@ public class QuerySet<T: AmigoModel>: AmigoConfigured{
             // without a fully qualified name.
             if let relationship = relatedModel.relationships[key] as? OneToMany {
                 let id = using.valueForKey(relatedModel.primaryKey!.label)!
-                let p = "\(relationship.column)_id = \(id)"
+                let relatedTable = fromTable.model!.foreignKeys[relationship.column]!.foreignKey!.relatedTable
+
+                let suffix = relatedTable.primaryKey!.label
+                let p = "\(relationship.column)_\(suffix) = \"\(id)\""
 
                 let relationshipPredicate = NSPredicate(format: p)
 
@@ -222,7 +225,7 @@ public class QuerySet<T: AmigoModel>: AmigoConfigured{
                 let obj = relationship.left == relatedModel ? relationship.left : relationship.right
                 let column = "\(obj.label)_\(obj.primaryKey!.label)"
                 let id = using.valueForKey(obj.primaryKey!.label)!
-                let p = "\(column) = \(id)"
+                let p = "\(column) = \"\(id)\""
 
                 let relationshipPredicate = NSPredicate(format: p)
 
