@@ -12,6 +12,7 @@ public func ==(lhs: ORMModel, rhs: ORMModel) -> Bool {
     return lhs.hashValue == rhs.hashValue
 }
 
+
 public class ORMModel: Hashable{
     public static let metadata = MetaData()
 
@@ -42,6 +43,7 @@ public class ORMModel: Hashable{
     public init(_ qualifiedType: String, properties:[MetaItem]){
 
         let schemaItems = properties.filter{$0 is SchemaItem}.map{ $0 as! SchemaItem}
+
         let relationshipList = properties.filter{$0 is Relationship}.map{ $0 as! Relationship }
         let nameParts = qualifiedType.unicodeScalars
                        .split{ $0 == "." }
@@ -66,25 +68,43 @@ public class ORMModel: Hashable{
 
         type = qualifiedType
         label = nameParts[1]
-        table = Table(tableName, metadata: ORMModel.metadata, items: schemaItems)
 
+        // as an ORMModel we do some fancy name mangling with foreignKey Columns:
+        let transformedSchemaItems = schemaItems.map{ item -> SchemaItem in
+
+            if let column = item as? Column, let fk = column.foreignKey{
+                let associatedPrimaryKeyName = fk.relatedColumn.label
+
+                // behold! the fancy name mangling
+                let label = "\(column.label)_\(associatedPrimaryKeyName)"
+
+                let primaryKey = column.primaryKey
+                let indexed = column.indexed
+                let unique = column.unique
+                let defaultValue = column.defaultValue
+
+                let newColumn = Column(label, type: fk, primaryKey: primaryKey, indexed: indexed, unique: unique, defaultValue: defaultValue)
+                tmpForeignKeys[column.label] = newColumn
+
+                return newColumn as SchemaItem
+            }
+
+            return item
+        }
+
+        table = Table(tableName, metadata: ORMModel.metadata, items: transformedSchemaItems)
         relationshipList.forEach{tmpRelationships[$0.label] = $0}
 
         table.sortedColumns.forEach{ value -> () in
-            if value.foreignKey != nil{
-                // foreign keys will have column names like:
-                // `foo_id`, but the relationship will be something
-                // like `foo` for selectRelated in the QuerySet,
-                // so we strip off the _id
-                let parts = value.label.unicodeScalars.split{ $0 == "_" }
-                    .map(String.init)
 
-                tmpForeignKeys[parts[0]] = value
-            } else {
-                tmpColumns.append(value)
-                if value.primaryKey {
-                    tmpPrimaryKey = value
-                }
+            guard value.foreignKey == nil else {
+                return
+            }
+
+            tmpColumns.append(value)
+
+            if value.primaryKey {
+                tmpPrimaryKey = value
             }
         }
 
@@ -94,6 +114,7 @@ public class ORMModel: Hashable{
         relationships = tmpRelationships
 
         AmigoModel.amigoModelIndex[qualifiedType] = self
+        table.model = self
     }
 
     public var hashValue: Int{
