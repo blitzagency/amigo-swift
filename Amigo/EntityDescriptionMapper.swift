@@ -112,7 +112,7 @@ public class EntityDescriptionMapper: AmigoEntityDescriptionMapper{
     func mapToOneRelationship(obj: NSRelationshipDescription) -> Column{
 
 
-        let name = obj.name + "_id"
+        let name = obj.name
         let entity = obj.destinationEntity!
         let destinationTable = dottedNameToTableName(entity.managedObjectClassName)
         let table = ORMModel.metadata.tables[destinationTable]!

@@ -60,7 +60,7 @@ public class AmigoSessionModelAction<T: AmigoModel>{
 
                 var delete = relationship.associationTable.delete()
 
-                let predicate = NSPredicate(format:" \(leftColumn) = \(leftParam) AND \(rightColumn) = \(rightParam)")
+                let predicate = NSPredicate(format:" \(leftColumn) = \"\(leftParam)\" AND \(rightColumn) = \"\(rightParam)\"")
 
                 let (filter, params) = session.engine.compiler.compile(predicate,
                     table: relationship.associationTable,
