@@ -20,6 +20,7 @@ public class Table: SchemaItem, FromClause{
     public var primaryKey: Column?
     public var columns = [String: Column]()
     public var indexes = [Index]()
+    var model: ORMModel?
 
     var _sortedColumns = [Column]() // represents the order added
 
