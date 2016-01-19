@@ -62,6 +62,7 @@ extension SQLiteEngine{
 
                 rows.append(objs[model]! as! T)
             }
+
             results.close()
             return rows
         }
