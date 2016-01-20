@@ -250,9 +250,9 @@ public class AmigoSession: AmigoConfigured{
         }
 
         // we definitely want this to blow up if any of these params don't exist.
-        let leftParam = obj.valueForKeyPath("\(leftKey).\(left.primaryKey!.label)")!
-        let rightParam = obj.valueForKeyPath("\(rightKey).\(right.primaryKey!.label)")!
-        let throughParam = model.primaryKey.modelValue(obj)!
+        let leftParam = left.primaryKey!.serialize(obj.valueForKeyPath("\(leftKey).\(left.primaryKey!.label)"))!
+        let rightParam = right.primaryKey!.serialize(obj.valueForKeyPath("\(rightKey).\(right.primaryKey!.label)"))!
+        let throughParam = model.primaryKey!.serialize(model.primaryKey.modelValue(obj))!
         let params = [leftParam, rightParam, throughParam]
 
         sql = insertThroughModelSQL(obj, relationship: relationship, upsert: isUpsert)
@@ -276,7 +276,7 @@ public class AmigoSession: AmigoConfigured{
 
         } else {
             var delete = relationship.associationTable.delete()
-            let predicate = NSPredicate(format: "\(throughId) = \(value)")
+            let predicate = NSPredicate(format: "\(throughId) = \"\(value)\"")
             let (filter, params) = engine.compiler.compile(predicate, table: relationship.associationTable, models: config.tableIndex)
 
             delete.filter(filter)
@@ -318,7 +318,7 @@ public class AmigoSession: AmigoConfigured{
                     let fkModel = config.tableIndex[column.relatedColumn.table!.label]!
 
                     if let id = fkModel.primaryKey.modelValue(target) {
-                        value = id
+                        value = fkModel.primaryKey.serialize(id)
                     } else {
 
                         if isUpsert{
@@ -327,7 +327,7 @@ public class AmigoSession: AmigoConfigured{
                             self.insert(target, model: fkModel)
                         }
 
-                        value = fkModel.primaryKey.modelValue(target)
+                        value = fkModel.primaryKey.serialize(fkModel.primaryKey.modelValue(target))
                     }
                 } else {
                     value = null

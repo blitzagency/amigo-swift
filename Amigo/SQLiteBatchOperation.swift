@@ -114,9 +114,9 @@ public class SQLiteBatchOperation: AmigoBatchOperation{
         }
 
         // if we don't have these parms, we don't proceed
-        guard let leftParam = obj.valueForKeyPath("\(leftKey).\(left.primaryKey!.label)"),
-              let rightParam = obj.valueForKeyPath("\(rightKey).\(right.primaryKey!.label)"),
-              let throughParam = model.primaryKey.modelValue(obj) else {
+        guard let leftParam = left.primaryKey!.serialize(obj.valueForKeyPath("\(leftKey).\(left.primaryKey!.label)")),
+              let rightParam = right.primaryKey!.serialize(obj.valueForKeyPath("\(rightKey).\(right.primaryKey!.label)")),
+              let throughParam = model.primaryKey!.serialize(model.primaryKey.modelValue(obj)) else {
             return
         }
 
@@ -237,7 +237,7 @@ public class SQLiteBatchOperation: AmigoBatchOperation{
     func buildDelete<T: AmigoModel>(obj: T) -> String {
         let model = obj.amigoModel
         let fragments: [String]
-        let params = [model.primaryKey.modelValue(obj)!]
+        let params = [model.primaryKey.serialize(model.primaryKey.modelValue(obj))!]
 
         if let parts = deleteCache[obj.qualifiedName] {
             fragments = parts
@@ -256,7 +256,7 @@ public class SQLiteBatchOperation: AmigoBatchOperation{
     func buildDeleteThroughModel<T: AmigoModel>(obj: T, relationship: ManyToMany, value: AnyObject) -> String{
         let model = obj.amigoModel
         let fragments: [String]
-        let params = [model.primaryKey.modelValue(obj)!]
+        let params = [model.primaryKey!.serialize(model.primaryKey.modelValue(obj))!]
 
         if let parts = deleteThroughCache[obj.qualifiedName] {
             fragments = parts

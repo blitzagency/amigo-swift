@@ -340,7 +340,19 @@ public struct SQLiteCompiler: Compiler{
 
         let metaLeft = compile(left)
         let metaRight = compile(right)
-        let params = [metaLeft.column?.serialize(metaRight.value)]
+
+        let params: [AnyObject?]
+
+        if let column = metaLeft.column{
+            if let fk = column.foreignKey{
+                params = [fk.relatedColumn.serialize(metaRight.value)]
+            } else {
+                params = [column.serialize(metaRight.value)]
+            }
+        } else {
+            params = []
+        }
+        //let params = [metaLeft.column?.serialize(metaRight.value)]
 
         let sql = compile(context.comparisionPredicate.predicateOperatorType, left: metaLeft.label, right: metaRight.label)
 
