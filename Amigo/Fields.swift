@@ -59,11 +59,13 @@ public class UUIDField: Column{
     }
 }
 
+
 public class CharField: Column{
     public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
         self.init(label, type: .StringAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
     }
 }
+
 
 public class BooleanField: Column{
     public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
@@ -71,11 +73,23 @@ public class BooleanField: Column{
     }
 }
 
+
 public class IntegerField: Column{
     public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
         self.init(label, type: .Integer64AttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
     }
+
+    override public func modelValue(model: AmigoModel) -> AnyObject? {
+        let value = model.valueForKey(label)
+
+        if let value = value as? Int where value == 0 && primaryKey == true{
+            return nil
+        }
+
+        return value
+    }
 }
+
 
 public class FloatField: Column{
     public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
@@ -83,17 +97,20 @@ public class FloatField: Column{
     }
 }
 
+
 public class DoubleField: Column{
     public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
         self.init(label, type: .DoubleAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
     }
 }
 
+
 public class BinaryField: Column{
     public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
         self.init(label, type: .BinaryDataAttributeType, primaryKey: primaryKey, indexed: indexed, optional: optional, unique: unique, defaultValue: defaultValue)
     }
 }
+
 
 public class DateTimeField: Column{
     public convenience init(_ label: String, primaryKey: Bool = false, indexed: Bool = false, optional: Bool = true, unique: Bool = false, defaultValue: (()-> AnyObject?)? = nil) {
