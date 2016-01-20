@@ -43,7 +43,6 @@ public class SQLiteBatchOperation: AmigoBatchOperation{
     }
 
     public func add<T: AmigoModel>(obj: T, upsert isUpsert: Bool = false) {
-
         let action = session.addAction(obj)
         let model = obj.amigoModel
 
