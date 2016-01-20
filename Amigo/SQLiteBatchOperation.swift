@@ -296,6 +296,10 @@ public class SQLiteBatchOperation: AmigoBatchOperation{
             return result
         }
 
+        if let data = value as? NSData {
+            return SQLiteFormat.escapeBlob(data)
+        }
+
         return SQLiteFormat.escapeWithoutQuotes(String(value))
     }
     

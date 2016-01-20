@@ -42,4 +42,34 @@ class SQLiteFormatTests: XCTestCase {
         let result = SQLiteFormat.escapeWithoutQuotes(value)
         XCTAssert(result == "test''s")
     }
+
+    func testEscapeBlob() {
+
+        let uuid = NSUUID()
+        var bytes = [UInt8](count: 16, repeatedValue: 0)
+        uuid.getUUIDBytes(&bytes)
+
+        let data = NSData(bytes: bytes, length: bytes.count)
+
+        let hex = SQLiteFormat.hexStringWithData(data)
+        let result = SQLiteFormat.escapeBlob(data)
+
+        XCTAssert(result == "x'\(hex)'")
+    }
+
+    func testEscapeEmptyBlob() {
+
+        let data = NSData()
+        let result = SQLiteFormat.escapeBlob(data)
+
+        XCTAssert(result == "NULL")
+    }
+
+    func testEscapeNilBlob() {
+
+        var data: NSData?
+        let result = SQLiteFormat.escapeBlob(data)
+
+        XCTAssert(result == "NULL")
+    }
 }

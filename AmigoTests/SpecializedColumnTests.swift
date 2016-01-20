@@ -219,4 +219,64 @@ class SpecializedColumnTests: XCTestCase {
             XCTFail("Unable to locate object for primary key: \(uuid.objId)")
         }
     }
+
+    func testNSDataBatchUpsertTest() {
+        // we have all the models setup here and a 
+        // UUID is a BLOB for Amigo, so rather than
+        // stick this with the other batch tests and need to 
+        // duplicate the initialization code, we are just 
+        // doing it here.
+
+        // remember batch operations do not write any data
+        // back to the original model. objId here is a 
+        // "defaultValue" column, which means that it will
+        // be generated at query time, but it will not
+        // be written back to the model.
+        // see the batch insert test below for the test
+        // that covers this.
+        let uuid = UUIDPKModel()
+        uuid.label = "Lucy"
+        uuid.objId = NSUUID().UUIDString.lowercaseString
+
+        let session = amigo.session
+
+        session.batch{ batch in
+            batch.add(uuid, upsert: true)
+        }
+
+        if let result = session.query(UUIDPKModel).get(uuid.objId){
+            XCTAssert(result.objId == uuid.objId)
+            XCTAssert(result.label == uuid.label)
+        } else {
+            XCTFail("Unable to locate object for primary key: \(uuid.objId)")
+        }
+    }
+
+    func testNSDataBatchInsertTest() {
+        // we have all the models setup here and a
+        // UUID is a BLOB for Amigo, so rather than
+        // stick this with the other batch tests and need to
+        // duplicate the initialization code, we are just
+        // doing it here.
+
+
+        let uuid = UUIDPKModel()
+        uuid.label = "Lucy"
+
+        let session = amigo.session
+
+        session.batch{ batch in
+            batch.add(uuid)
+        }
+
+        let obj = session.query(UUIDPKModel).all().first!
+        print(obj.objId)
+
+        if let result = session.query(UUIDPKModel).get(obj.objId){
+            XCTAssert(result.objId == obj.objId)
+            XCTAssert(result.label == obj.label)
+        } else {
+            XCTFail("Unable to locate object for primary key: \(uuid.objId)")
+        }
+    }
 }
