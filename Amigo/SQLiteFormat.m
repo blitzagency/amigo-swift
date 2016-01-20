@@ -55,7 +55,7 @@
     return result;
 }
 
-+ (nonnull NSString *)hexStringWithData:(NSData *)data{
++ (nonnull NSString *)hexStringWithData:(nonnull NSData *)data{
     // https://gist.github.com/hlung/6333269
 
     const unsigned char* dataBuffer = (const unsigned char *)[data bytes];

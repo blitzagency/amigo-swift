@@ -13,6 +13,6 @@
 + (nonnull NSString *)escapeWithQuotes:(nullable NSString *)value;
 + (nonnull NSString *)escapeWithoutQuotes:(nullable NSString *)value;
 + (nonnull NSString *)escapeBlob:(nullable NSData *)value;
-+ (nonnull NSString *)hexStringWithData:(NSData *)data;
++ (nonnull NSString *)hexStringWithData:(nonnull NSData *)data;
 @end
 
