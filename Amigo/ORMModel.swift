@@ -74,7 +74,6 @@ public class ORMModel: Hashable{
 
             if let column = item as? Column, let fk = column.foreignKey{
                 let associatedPrimaryKeyName = fk.relatedColumn.label
-
                 // behold! the fancy name mangling
                 let label = "\(column.label)_\(associatedPrimaryKeyName)"
 

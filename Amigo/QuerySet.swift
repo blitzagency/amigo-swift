@@ -74,7 +74,8 @@ public class QuerySet<T: AmigoModel>: AmigoConfigured{
 
     public func get(primaryKey: AnyObject) -> T?{
         self.filter("\(model.primaryKey.label) = \"\(primaryKey)\"")
-        return all().first
+        let results = self.all()
+        return results.first
     }
 
     public func all() -> [T]{
