@@ -78,7 +78,7 @@
 		23F9E8661C47CAB4004AF2B0 /* SQLiteFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 23F9E8651C47CA3E004AF2B0 /* SQLiteFormat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		23F9E8681C47CB51004AF2B0 /* SQLiteFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 23F9E8671C47CB51004AF2B0 /* SQLiteFormat.m */; };
 		23F9E86A1C47D27F004AF2B0 /* SQLiteFormatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9E8691C47D27F004AF2B0 /* SQLiteFormatTests.swift */; };
-		23F9E86C1C482392004AF2B0 /* BatchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9E86B1C482392004AF2B0 /* BatchOperation.swift */; };
+		23F9E86C1C482392004AF2B0 /* AmigoBatchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9E86B1C482392004AF2B0 /* AmigoBatchOperation.swift */; };
 		23F9E86E1C48246A004AF2B0 /* SQLiteBatchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9E86D1C48246A004AF2B0 /* SQLiteBatchOperation.swift */; };
 		23F9E8701C4B03C5004AF2B0 /* AmigoSessionAsyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9E86F1C4B03C5004AF2B0 /* AmigoSessionAsyncTests.swift */; };
 		23F9E8721C4B05FA004AF2B0 /* AmigoSessionAsyncAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9E8711C4B05FA004AF2B0 /* AmigoSessionAsyncAction.swift */; };
@@ -180,7 +180,7 @@
 		23F9E8651C47CA3E004AF2B0 /* SQLiteFormat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQLiteFormat.h; sourceTree = "<group>"; };
 		23F9E8671C47CB51004AF2B0 /* SQLiteFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SQLiteFormat.m; sourceTree = "<group>"; };
 		23F9E8691C47D27F004AF2B0 /* SQLiteFormatTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteFormatTests.swift; sourceTree = "<group>"; };
-		23F9E86B1C482392004AF2B0 /* BatchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BatchOperation.swift; sourceTree = "<group>"; };
+		23F9E86B1C482392004AF2B0 /* AmigoBatchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmigoBatchOperation.swift; sourceTree = "<group>"; };
 		23F9E86D1C48246A004AF2B0 /* SQLiteBatchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteBatchOperation.swift; sourceTree = "<group>"; };
 		23F9E86F1C4B03C5004AF2B0 /* AmigoSessionAsyncTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmigoSessionAsyncTests.swift; sourceTree = "<group>"; };
 		23F9E8711C4B05FA004AF2B0 /* AmigoSessionAsyncAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmigoSessionAsyncAction.swift; sourceTree = "<group>"; };
@@ -358,7 +358,7 @@
 				23B43B001B4C011400F90DFD /* TypeCompiler.swift */,
 				23B43B021B4C06AE00F90DFD /* Compiler.swift */,
 				2331189F1B600DF100943976 /* ThreadLocalEngineFactory.swift */,
-				23F9E86B1C482392004AF2B0 /* BatchOperation.swift */,
+				23F9E86B1C482392004AF2B0 /* AmigoBatchOperation.swift */,
 			);
 			name = Engines;
 			sourceTree = "<group>";
@@ -545,7 +545,7 @@
 				2331189E1B600BC100943976 /* EngineFactory.swift in Sources */,
 				23F3CFC41B46CEFB00D8AD4C /* Column.swift in Sources */,
 				23C754B71B5E75B700584D1E /* DefaultMapper.swift in Sources */,
-				23F9E86C1C482392004AF2B0 /* BatchOperation.swift in Sources */,
+				23F9E86C1C482392004AF2B0 /* AmigoBatchOperation.swift in Sources */,
 				23F3CFC81B46E15E00D8AD4C /* ForeignKey.swift in Sources */,
 				233118A01B600DF100943976 /* ThreadLocalEngineFactory.swift in Sources */,
 				23B43B031B4C06AE00F90DFD /* Compiler.swift in Sources */,

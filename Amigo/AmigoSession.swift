@@ -55,7 +55,7 @@ public class AmigoSession: AmigoConfigured{
         AmigoSessionAsyncAction(action: action).run()
     }
 
-    public func batch(handler: (BatchOperation) -> ()) {
+    public func batch(handler: (AmigoBatchOperation) -> ()) {
         let operation = engine.createBatchOperation(self)
         handler(operation)
         operation.execute()

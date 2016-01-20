@@ -21,7 +21,7 @@ public protocol Engine {
     func execute(sql: String, params: [AnyObject]!)
     func execute(sql: String)
     func execute<T: AmigoModel>(queryset: QuerySet<T>) -> [T]
-    func createBatchOperation(session: AmigoSession) -> BatchOperation
+    func createBatchOperation(session: AmigoSession) -> AmigoBatchOperation
 
     func beginTransaction()
     func commitTransaction()

@@ -35,7 +35,7 @@ public class SQLiteEngine: NSObject, Engine{
         }
     }
 
-    public func createBatchOperation(session: AmigoSession) -> BatchOperation{
+    public func createBatchOperation(session: AmigoSession) -> AmigoBatchOperation{
         return SQLiteBatchOperation(session: session)
     }
 

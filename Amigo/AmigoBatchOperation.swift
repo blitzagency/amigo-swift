@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol BatchOperation{
+public protocol AmigoBatchOperation{
     init(session: AmigoSession)
 
     func add<T: AmigoModel>(obj: T)

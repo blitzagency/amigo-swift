@@ -9,7 +9,7 @@
 import Foundation
 
 
-public class SQLiteBatchOperation: BatchOperation{
+public class SQLiteBatchOperation: AmigoBatchOperation{
 
     let session: AmigoSession
     var insertCache = [String: [String]]()
