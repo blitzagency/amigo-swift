@@ -20,6 +20,24 @@ public class Amigo: AmigoConfigured{
         return QuerySet<T>(model: model, config: threadConfig())
     }
 
+    public func async<T>(queue queue: dispatch_queue_t? = nil, action: () -> T) -> AmigoSessionAsyncAction<T>{
+
+        if let queue = queue{
+            return AmigoSessionAsyncAction(action: action, queue: queue)
+        }
+
+        return AmigoSessionAsyncAction(action: action)
+    }
+
+    public func async(queue queue: dispatch_queue_t? = nil, action: () -> ()){
+        if let queue = queue{
+            AmigoSessionAsyncAction(action: action, queue: queue).run()
+            return
+        }
+
+        AmigoSessionAsyncAction(action: action).run()
+    }
+
     public var session: AmigoSession{
         // there is currently an issue here with multiple threads.
         // a session could be grabbed from each thread, but in the current
